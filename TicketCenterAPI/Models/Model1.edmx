@@ -1,0 +1,528 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ticketcenterdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categories">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Category" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Role" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="20" />
+        </EntityType>
+        <EntityType Name="TechCategoryRel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tickets">
+          <Key>
+            <PropertyRef Name="TicketId" />
+          </Key>
+          <Property Name="TicketId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="100" />
+          <Property Name="Comment" Type="varchar" MaxLength="100" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CategoryId" Type="int" />
+          <Property Name="StatusId" Type="int" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="50" />
+          <Property Name="LastName" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="Password" Type="varchar" MaxLength="50" />
+          <Property Name="IsActivate" Type="bit" />
+          <Property Name="IsLocked" Type="bit" />
+          <Property Name="RolesId" Type="int" />
+        </EntityType>
+        <EntityType Name="UserTickets">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="userId" Type="int" />
+          <Property Name="ticketId" Type="int" />
+        </EntityType>
+        <Association Name="FK_Tickets_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_Status">
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RolesId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTickets_Tickets">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="0..1" />
+          <End Role="UserTickets" Type="Self.UserTickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketId" />
+            </Principal>
+            <Dependent Role="UserTickets">
+              <PropertyRef Name="ticketId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTickets_UserTickets">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="UserTickets" Type="Self.UserTickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserTickets">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="ins_tickets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Description" Type="varchar" Mode="In" />
+          <Parameter Name="Comment" Type="varchar" Mode="In" />
+          <Parameter Name="CategoryId" Type="int" Mode="In" />
+          <Parameter Name="StatusId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ins_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FirstName" Type="varchar" Mode="In" />
+          <Parameter Name="LastName" Type="varchar" Mode="In" />
+          <Parameter Name="Email" Type="varchar" Mode="In" />
+          <Parameter Name="Password" Type="varchar" Mode="In" />
+          <Parameter Name="IsActivate" Type="bit" Mode="In" />
+          <Parameter Name="IsLocked" Type="bit" Mode="In" />
+          <Parameter Name="RolesId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_select_all_categories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_select_all_roles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_select_all_tickets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_selectAllStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_techician_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ticketId" Type="int" Mode="In" />
+          <Parameter Name="statusId" Type="int" Mode="In" />
+          <Parameter Name="comments" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_users_role" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="roleId" Type="int" Mode="In" />
+          <Parameter Name="userId" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="ticketcenterdbModelStoreContainer">
+          <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TechCategoryRel" EntityType="Self.TechCategoryRel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tickets" EntityType="Self.Tickets" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserTickets" EntityType="Self.UserTickets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Tickets_Categories" Association="Self.FK_Tickets_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_Status" Association="Self.FK_Tickets_Status">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTickets_Tickets" Association="Self.FK_UserTickets_Tickets">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="UserTickets" EntitySet="UserTickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTickets_UserTickets" Association="Self.FK_UserTickets_UserTickets">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserTickets" EntitySet="UserTickets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ticketcenterdbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Category1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Categories" FromRole="Categories" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Role1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_Roles" FromRole="Roles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Status">
+          <Key>
+            <PropertyRef Name="StatusId" />
+          </Key>
+          <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Status" FromRole="Status" ToRole="Tickets" />
+        </EntityType>
+        <EntityType Name="TechCategoryRel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketId" />
+          </Key>
+          <Property Name="TicketId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Comment" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CategoryId" Type="Int32" />
+          <Property Name="StatusId" Type="Int32" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Tickets_Categories" FromRole="Tickets" ToRole="Categories" />
+          <NavigationProperty Name="Status" Relationship="Self.FK_Tickets_Status" FromRole="Tickets" ToRole="Status" />
+          <NavigationProperty Name="UserTickets" Relationship="Self.FK_UserTickets_Tickets" FromRole="Tickets" ToRole="UserTickets" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActivate" Type="Boolean" />
+          <Property Name="IsLocked" Type="Boolean" />
+          <Property Name="RolesId" Type="Int32" />
+          <NavigationProperty Name="Role" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="UserTickets" Relationship="Self.FK_UserTickets_UserTickets" FromRole="Users" ToRole="UserTickets" />
+        </EntityType>
+        <EntityType Name="UserTicket">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="userId" Type="Int32" />
+          <Property Name="ticketId" Type="Int32" />
+          <NavigationProperty Name="Ticket" Relationship="Self.FK_UserTickets_Tickets" FromRole="UserTickets" ToRole="Tickets" />
+          <NavigationProperty Name="User" Relationship="Self.FK_UserTickets_UserTickets" FromRole="UserTickets" ToRole="Users" />
+        </EntityType>
+        <Association Name="FK_Tickets_Categories">
+          <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Roles">
+          <End Role="Roles" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="RolesId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_Status">
+          <End Role="Status" Type="Self.Status" Multiplicity="0..1" />
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Status">
+              <PropertyRef Name="StatusId" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTickets_Tickets">
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="0..1" />
+          <End Role="UserTickets" Type="Self.UserTicket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketId" />
+            </Principal>
+            <Dependent Role="UserTickets">
+              <PropertyRef Name="ticketId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserTickets_UserTickets">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserTickets" Type="Self.UserTicket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="UserTickets">
+              <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ticketcenterdbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="Status" EntityType="Self.Status" />
+          <EntitySet Name="TechCategoryRels" EntityType="Self.TechCategoryRel" />
+          <EntitySet Name="Tickets" EntityType="Self.Ticket" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="UserTickets" EntityType="Self.UserTicket" />
+          <AssociationSet Name="FK_Tickets_Categories" Association="Self.FK_Tickets_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_Status" Association="Self.FK_Tickets_Status">
+            <End Role="Status" EntitySet="Status" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTickets_Tickets" Association="Self.FK_UserTickets_Tickets">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="UserTickets" EntitySet="UserTickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserTickets_UserTickets" Association="Self.FK_UserTickets_UserTickets">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserTickets" EntitySet="UserTickets" />
+          </AssociationSet>
+          <FunctionImport Name="ins_tickets">
+            <Parameter Name="Description" Mode="In" Type="String" />
+            <Parameter Name="Comment" Mode="In" Type="String" />
+            <Parameter Name="CategoryId" Mode="In" Type="Int32" />
+            <Parameter Name="StatusId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ins_user">
+            <Parameter Name="FirstName" Mode="In" Type="String" />
+            <Parameter Name="LastName" Mode="In" Type="String" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="IsActivate" Mode="In" Type="Boolean" />
+            <Parameter Name="IsLocked" Mode="In" Type="Boolean" />
+            <Parameter Name="RolesId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_select_all_categories" ReturnType="Collection(ticketcenterdbModel.sp_select_all_categories_Result)" />
+          <FunctionImport Name="sp_select_all_roles" ReturnType="Collection(ticketcenterdbModel.sp_select_all_roles_Result)" />
+          <FunctionImport Name="sp_select_all_tickets" ReturnType="Collection(ticketcenterdbModel.sp_select_all_tickets_Result)" />
+          <FunctionImport Name="sp_selectAllStatus" ReturnType="Collection(ticketcenterdbModel.sp_selectAllStatus_Result)" />
+          <FunctionImport Name="usp_techician_ticket">
+            <Parameter Name="ticketId" Mode="In" Type="Int32" />
+            <Parameter Name="statusId" Mode="In" Type="Int32" />
+            <Parameter Name="comments" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_users_role">
+            <Parameter Name="roleId" Mode="In" Type="Int32" />
+            <Parameter Name="userId" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_select_all_categories_Result">
+          <Property Type="Int32" Name="CategoryId" Nullable="false" />
+          <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_select_all_roles_Result">
+          <Property Type="Int32" Name="RoleId" Nullable="false" />
+          <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_select_all_tickets_Result">
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="sp_selectAllStatus_Result">
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ticketcenterdbModelStoreContainer" CdmEntityContainer="ticketcenterdbEntities">
+          <EntitySetMapping Name="Categories">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.Category">
+              <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="Category1" ColumnName="Category" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Role1" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Status">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.Status">
+              <MappingFragment StoreEntitySet="Status">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Status1" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TechCategoryRels">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.TechCategoryRel">
+              <MappingFragment StoreEntitySet="TechCategoryRel">
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tickets">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.Ticket">
+              <MappingFragment StoreEntitySet="Tickets">
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="IsActivate" ColumnName="IsActivate" />
+                <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
+                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserTickets">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.UserTicket">
+              <MappingFragment StoreEntitySet="UserTickets">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="ticketId" ColumnName="ticketId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ins_tickets" FunctionName="ticketcenterdbModel.Store.ins_tickets" />
+          <FunctionImportMapping FunctionImportName="ins_user" FunctionName="ticketcenterdbModel.Store.ins_user" />
+          <FunctionImportMapping FunctionImportName="sp_select_all_categories" FunctionName="ticketcenterdbModel.Store.sp_select_all_categories">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_categories_Result">
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_select_all_roles" FunctionName="ticketcenterdbModel.Store.sp_select_all_roles">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_roles_Result">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_select_all_tickets" FunctionName="ticketcenterdbModel.Store.sp_select_all_tickets">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_tickets_Result">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_selectAllStatus" FunctionName="ticketcenterdbModel.Store.sp_selectAllStatus">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_selectAllStatus_Result">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_techician_ticket" FunctionName="ticketcenterdbModel.Store.usp_techician_ticket" />
+          <FunctionImportMapping FunctionImportName="usp_users_role" FunctionName="ticketcenterdbModel.Store.usp_users_role" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
