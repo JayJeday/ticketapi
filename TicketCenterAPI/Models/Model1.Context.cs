@@ -138,5 +138,10 @@ namespace TicketCenterAPI.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_users_role", roleIdParameter, userIdParameter);
         }
+    
+        public virtual ObjectResult<sp_select_all_users_Result> sp_select_all_users()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_users_Result>("sp_select_all_users");
+        }
     }
 }

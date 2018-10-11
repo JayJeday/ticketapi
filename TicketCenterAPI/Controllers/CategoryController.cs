@@ -33,8 +33,6 @@ namespace TicketCenterAPI.Controllers
 
                 if (categories != null)
                 {
-                    //TODO modify Json
-
                     //if we have a results get categories to json
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(categories);
                 }
