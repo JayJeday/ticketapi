@@ -15,10 +15,10 @@ namespace TicketCenterAPI.Models
     using System.Data.Entity.Core.Objects;
     using System.Linq;
     
-    public partial class ticketcenterdbEntities : DbContext
+    public partial class ticketcenterdbEntities1 : DbContext
     {
-        public ticketcenterdbEntities()
-            : base("name=ticketcenterdbEntities")
+        public ticketcenterdbEntities1()
+            : base("name=ticketcenterdbEntities1")
         {
         }
     
@@ -104,6 +104,11 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_tickets_Result>("sp_select_all_tickets");
         }
     
+        public virtual ObjectResult<sp_select_all_users_Result> sp_select_all_users()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_users_Result>("sp_select_all_users");
+        }
+    
         public virtual ObjectResult<sp_selectAllStatus_Result> sp_selectAllStatus()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_selectAllStatus_Result>("sp_selectAllStatus");
@@ -137,11 +142,6 @@ namespace TicketCenterAPI.Models
                 new ObjectParameter("userId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_users_role", roleIdParameter, userIdParameter);
-        }
-    
-        public virtual ObjectResult<sp_select_all_users_Result> sp_select_all_users()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_users_Result>("sp_select_all_users");
         }
     }
 }

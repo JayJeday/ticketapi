@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="ticketcenterdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="ticketcenterdbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Categories">
           <Key>
             <PropertyRef Name="CategoryId" />
@@ -182,7 +182,8 @@
             <End Role="UserTickets" EntitySet="UserTickets" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ticketcenterdbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -315,7 +316,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ticketcenterdbEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="ticketcenterdbEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="Status" EntityType="Self.Status" />
@@ -361,6 +362,7 @@
           <FunctionImport Name="sp_select_all_categories" ReturnType="Collection(ticketcenterdbModel.sp_select_all_categories_Result)" />
           <FunctionImport Name="sp_select_all_roles" ReturnType="Collection(ticketcenterdbModel.sp_select_all_roles_Result)" />
           <FunctionImport Name="sp_select_all_tickets" ReturnType="Collection(ticketcenterdbModel.sp_select_all_tickets_Result)" />
+          <FunctionImport Name="sp_select_all_users" ReturnType="Collection(ticketcenterdbModel.sp_select_all_users_Result)" />
           <FunctionImport Name="sp_selectAllStatus" ReturnType="Collection(ticketcenterdbModel.sp_selectAllStatus_Result)" />
           <FunctionImport Name="usp_techician_ticket">
             <Parameter Name="ticketId" Mode="In" Type="Int32" />
@@ -371,7 +373,6 @@
             <Parameter Name="roleId" Mode="In" Type="Int32" />
             <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
-          <FunctionImport Name="sp_select_all_users" ReturnType="Collection(ticketcenterdbModel.sp_select_all_users_Result)" />
         </EntityContainer>
         <ComplexType Name="sp_select_all_categories_Result">
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
@@ -382,13 +383,12 @@
           <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
         </ComplexType>
         <ComplexType Name="sp_select_all_tickets_Result">
+          <Property Type="Int32" Name="TicketId" Nullable="false" />
           <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
           <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="CategoryId" Nullable="false" />
           <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
-        </ComplexType>
-        <ComplexType Name="sp_selectAllStatus_Result">
           <Property Type="Int32" Name="StatusId" Nullable="false" />
           <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
         </ComplexType>
@@ -402,12 +402,16 @@
           <Property Type="Boolean" Name="IsLocked" Nullable="true" />
           <Property Type="Int32" Name="RolesId" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="sp_selectAllStatus_Result">
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ticketcenterdbModelStoreContainer" CdmEntityContainer="ticketcenterdbEntities">
+        <EntityContainerMapping StorageEntityContainer="ticketcenterdbModelStoreContainer" CdmEntityContainer="ticketcenterdbEntities1">
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="ticketcenterdbModel.Category">
               <MappingFragment StoreEntitySet="Categories">
@@ -495,24 +499,17 @@
           <FunctionImportMapping FunctionImportName="sp_select_all_tickets" FunctionName="ticketcenterdbModel.Store.sp_select_all_tickets">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_tickets_Result">
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="sp_selectAllStatus" FunctionName="ticketcenterdbModel.Store.sp_selectAllStatus">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_selectAllStatus_Result">
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="usp_techician_ticket" FunctionName="ticketcenterdbModel.Store.usp_techician_ticket" />
-          <FunctionImportMapping FunctionImportName="usp_users_role" FunctionName="ticketcenterdbModel.Store.usp_users_role" />
           <FunctionImportMapping FunctionImportName="sp_select_all_users" FunctionName="ticketcenterdbModel.Store.sp_select_all_users">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_users_Result">
@@ -527,6 +524,16 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_selectAllStatus" FunctionName="ticketcenterdbModel.Store.sp_selectAllStatus">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_selectAllStatus_Result">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_techician_ticket" FunctionName="ticketcenterdbModel.Store.usp_techician_ticket" />
+          <FunctionImportMapping FunctionImportName="usp_users_role" FunctionName="ticketcenterdbModel.Store.usp_users_role" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

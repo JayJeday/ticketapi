@@ -13,10 +13,13 @@ namespace TicketCenterAPI.Models
     
     public partial class sp_select_all_tickets_Result
     {
+        public int TicketId { get; set; }
         public string Description { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
         public string Comment { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public int CategoryId { get; set; }
         public string Category { get; set; }
+        public int StatusId { get; set; }
         public string Status { get; set; }
     }
 }

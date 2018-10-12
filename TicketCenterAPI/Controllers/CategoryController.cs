@@ -16,7 +16,7 @@ namespace TicketCenterAPI.Controllers
         {
             //using method calls dispose to dispose any resourses after the  call
             //context access the data model from the database
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 

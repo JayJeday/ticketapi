@@ -14,7 +14,7 @@ namespace TicketCenterAPI.Controllers
         [ActionName("getusers")]
         public HttpResponseMessage GetAllUser()
         {
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
@@ -51,7 +51,7 @@ namespace TicketCenterAPI.Controllers
         {
             string requestBody;
             string cred;
-            using(var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using(var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
@@ -82,7 +82,7 @@ namespace TicketCenterAPI.Controllers
         [ActionName("updateuser")]
         public HttpResponseMessage UpdateUser()
         {
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
 
                 context.Configuration.ProxyCreationEnabled = false;
@@ -116,7 +116,7 @@ namespace TicketCenterAPI.Controllers
         [ActionName("getroles")]
         public HttpResponseMessage GetRoles()
         {
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 

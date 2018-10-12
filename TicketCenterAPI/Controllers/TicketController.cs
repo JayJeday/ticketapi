@@ -14,7 +14,7 @@ namespace TicketCenterAPI.Controllers
         [ActionName("getalltickets")]
         public HttpResponseMessage GetAllTickets()
         {
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
@@ -50,7 +50,7 @@ namespace TicketCenterAPI.Controllers
         [ActionName("addticket")]
         public HttpResponseMessage AddTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
         {
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
@@ -77,7 +77,7 @@ namespace TicketCenterAPI.Controllers
         public HttpResponseMessage UpdateTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
         {
             
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 
                 context.Configuration.ProxyCreationEnabled = false;
