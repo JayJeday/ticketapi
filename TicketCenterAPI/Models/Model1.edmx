@@ -10,7 +10,7 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="CategoryDesc" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Roles">
           <Key>
@@ -24,7 +24,7 @@
             <PropertyRef Name="StatusId" />
           </Key>
           <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Status" Type="varchar" MaxLength="20" />
+          <Property Name="StatusDesc" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="TechCategoryRel">
           <Key>
@@ -42,6 +42,7 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CategoryId" Type="int" />
           <Property Name="StatusId" Type="int" />
+          <Property Name="UserId" Type="int" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -88,6 +89,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Ticket">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Users_Roles">
           <End Role="Roles" Type="Self.Roles" Multiplicity="0..1" />
           <End Role="Users" Type="Self.Users" Multiplicity="*" />
@@ -124,6 +137,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="ins_category" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="category" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ins_status" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="status" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="ins_tickets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Description" Type="varchar" Mode="In" />
           <Parameter Name="Comment" Type="varchar" Mode="In" />
@@ -139,11 +158,29 @@
           <Parameter Name="IsLocked" Type="bit" Mode="In" />
           <Parameter Name="RolesId" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_get_category_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_get_status_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_get_ticket_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TicketId" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_select_all_categories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_select_all_roles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_select_all_status" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_select_all_tickets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_select_all_users" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_selectAllStatus" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="usp_category" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="categoryId" Type="int" Mode="In" />
+          <Parameter Name="category" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="usp_status" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="statusId" Type="int" Mode="In" />
+          <Parameter Name="status" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="usp_techician_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ticketId" Type="int" Mode="In" />
           <Parameter Name="statusId" Type="int" Mode="In" />
@@ -169,6 +206,10 @@
             <End Role="Status" EntitySet="Status" />
             <End Role="Tickets" EntitySet="Tickets" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Ticket" Association="Self.FK_User_Ticket">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
           <AssociationSet Name="FK_Users_Roles" Association="Self.FK_Users_Roles">
             <End Role="Roles" EntitySet="Roles" />
             <End Role="Users" EntitySet="Users" />
@@ -192,7 +233,7 @@
             <PropertyRef Name="CategoryId" />
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Category1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Categories" FromRole="Categories" ToRole="Tickets" />
         </EntityType>
         <EntityType Name="Role">
@@ -208,7 +249,7 @@
             <PropertyRef Name="StatusId" />
           </Key>
           <Property Name="StatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Status1" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="StatusDesc" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Status" FromRole="Status" ToRole="Tickets" />
         </EntityType>
         <EntityType Name="TechCategoryRel">
@@ -227,8 +268,10 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CategoryId" Type="Int32" />
           <Property Name="StatusId" Type="Int32" />
+          <Property Name="UserId" Type="Int32" />
           <NavigationProperty Name="Category" Relationship="Self.FK_Tickets_Categories" FromRole="Tickets" ToRole="Categories" />
           <NavigationProperty Name="Status" Relationship="Self.FK_Tickets_Status" FromRole="Tickets" ToRole="Status" />
+          <NavigationProperty Name="User" Relationship="Self.FK_User_Ticket" FromRole="Tickets" ToRole="Users" />
           <NavigationProperty Name="UserTickets" Relationship="Self.FK_UserTickets_Tickets" FromRole="Tickets" ToRole="UserTickets" />
         </EntityType>
         <EntityType Name="User">
@@ -244,6 +287,7 @@
           <Property Name="IsLocked" Type="Boolean" />
           <Property Name="RolesId" Type="Int32" />
           <NavigationProperty Name="Role" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK_User_Ticket" FromRole="Users" ToRole="Tickets" />
           <NavigationProperty Name="UserTickets" Relationship="Self.FK_UserTickets_UserTickets" FromRole="Users" ToRole="UserTickets" />
         </EntityType>
         <EntityType Name="UserTicket">
@@ -292,6 +336,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Ticket">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_UserTickets_Tickets">
           <End Role="Tickets" Type="Self.Ticket" Multiplicity="0..1" />
           <End Role="UserTickets" Type="Self.UserTicket" Multiplicity="*" />
@@ -336,6 +392,10 @@
             <End Role="Status" EntitySet="Status" />
             <End Role="Tickets" EntitySet="Tickets" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Ticket" Association="Self.FK_User_Ticket">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
           <AssociationSet Name="FK_UserTickets_Tickets" Association="Self.FK_UserTickets_Tickets">
             <End Role="Tickets" EntitySet="Tickets" />
             <End Role="UserTickets" EntitySet="UserTickets" />
@@ -344,6 +404,12 @@
             <End Role="Users" EntitySet="Users" />
             <End Role="UserTickets" EntitySet="UserTickets" />
           </AssociationSet>
+          <FunctionImport Name="ins_category">
+            <Parameter Name="category" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ins_status">
+            <Parameter Name="status" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="ins_tickets">
             <Parameter Name="Description" Mode="In" Type="String" />
             <Parameter Name="Comment" Mode="In" Type="String" />
@@ -359,11 +425,29 @@
             <Parameter Name="IsLocked" Mode="In" Type="Boolean" />
             <Parameter Name="RolesId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_get_category_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_category_by_id_Result)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_get_status_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_status_by_id_Result)">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_get_ticket_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_ticket_by_id_Result)">
+            <Parameter Name="TicketId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="sp_select_all_categories" ReturnType="Collection(ticketcenterdbModel.sp_select_all_categories_Result)" />
           <FunctionImport Name="sp_select_all_roles" ReturnType="Collection(ticketcenterdbModel.sp_select_all_roles_Result)" />
+          <FunctionImport Name="sp_select_all_status" ReturnType="Collection(ticketcenterdbModel.sp_select_all_status_Result)" />
           <FunctionImport Name="sp_select_all_tickets" ReturnType="Collection(ticketcenterdbModel.sp_select_all_tickets_Result)" />
           <FunctionImport Name="sp_select_all_users" ReturnType="Collection(ticketcenterdbModel.sp_select_all_users_Result)" />
           <FunctionImport Name="sp_selectAllStatus" ReturnType="Collection(ticketcenterdbModel.sp_selectAllStatus_Result)" />
+          <FunctionImport Name="usp_category">
+            <Parameter Name="categoryId" Mode="In" Type="Int32" />
+            <Parameter Name="category" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_status">
+            <Parameter Name="statusId" Mode="In" Type="Int32" />
+            <Parameter Name="status" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="usp_techician_ticket">
             <Parameter Name="ticketId" Mode="In" Type="Int32" />
             <Parameter Name="statusId" Mode="In" Type="Int32" />
@@ -374,23 +458,48 @@
             <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
-        <ComplexType Name="sp_select_all_categories_Result">
+        <ComplexType Name="sp_get_category_by_id_Result">
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
-          <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
         </ComplexType>
-        <ComplexType Name="sp_select_all_roles_Result">
-          <Property Type="Int32" Name="RoleId" Nullable="false" />
-          <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
+        <ComplexType Name="sp_get_status_by_id_Result">
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
         </ComplexType>
-        <ComplexType Name="sp_select_all_tickets_Result">
+        <ComplexType Name="sp_get_ticket_by_id_Result">
           <Property Type="Int32" Name="TicketId" Nullable="false" />
           <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
           <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
           <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
-          <Property Type="String" Name="Category" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="StatusId" Nullable="false" />
-          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="sp_select_all_categories_Result">
+          <Property Type="Int32" Name="CategoryId" Nullable="false" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_select_all_roles_Result">
+          <Property Type="Int32" Name="RoleId" Nullable="false" />
+          <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_select_all_status_Result">
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
+        </ComplexType>
+        <ComplexType Name="sp_select_all_tickets_Result">
+          <Property Type="Int32" Name="TicketId" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="CategoryId" Nullable="true" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="StatusId" Nullable="true" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="UserId" Nullable="true" />
+          <Property Type="String" Name="TechName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="RolesId" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_select_all_users_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -404,7 +513,7 @@
         </ComplexType>
         <ComplexType Name="sp_selectAllStatus_Result">
           <Property Type="Int32" Name="StatusId" Nullable="false" />
-          <Property Type="String" Name="Status" Nullable="true" MaxLength="20" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -416,7 +525,7 @@
             <EntityTypeMapping TypeName="ticketcenterdbModel.Category">
               <MappingFragment StoreEntitySet="Categories">
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="Category1" ColumnName="Category" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -432,7 +541,7 @@
             <EntityTypeMapping TypeName="ticketcenterdbModel.Status">
               <MappingFragment StoreEntitySet="Status">
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="Status1" ColumnName="Status" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -452,6 +561,7 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -478,13 +588,45 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ins_category" FunctionName="ticketcenterdbModel.Store.ins_category" />
+          <FunctionImportMapping FunctionImportName="ins_status" FunctionName="ticketcenterdbModel.Store.ins_status" />
           <FunctionImportMapping FunctionImportName="ins_tickets" FunctionName="ticketcenterdbModel.Store.ins_tickets" />
           <FunctionImportMapping FunctionImportName="ins_user" FunctionName="ticketcenterdbModel.Store.ins_user" />
+          <FunctionImportMapping FunctionImportName="sp_get_category_by_id" FunctionName="ticketcenterdbModel.Store.sp_get_category_by_id">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_category_by_id_Result">
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_get_status_by_id" FunctionName="ticketcenterdbModel.Store.sp_get_status_by_id">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_status_by_id_Result">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_get_ticket_by_id" FunctionName="ticketcenterdbModel.Store.sp_get_ticket_by_id">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_ticket_by_id_Result">
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_select_all_categories" FunctionName="ticketcenterdbModel.Store.sp_select_all_categories">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_categories_Result">
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -496,6 +638,14 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_select_all_status" FunctionName="ticketcenterdbModel.Store.sp_select_all_status">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_status_Result">
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_select_all_tickets" FunctionName="ticketcenterdbModel.Store.sp_select_all_tickets">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_tickets_Result">
@@ -504,9 +654,12 @@
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TechName" ColumnName="TechName" />
+                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -528,10 +681,12 @@
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_selectAllStatus_Result">
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
-                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="usp_category" FunctionName="ticketcenterdbModel.Store.usp_category" />
+          <FunctionImportMapping FunctionImportName="usp_status" FunctionName="ticketcenterdbModel.Store.usp_status" />
           <FunctionImportMapping FunctionImportName="usp_techician_ticket" FunctionName="ticketcenterdbModel.Store.usp_techician_ticket" />
           <FunctionImportMapping FunctionImportName="usp_users_role" FunctionName="ticketcenterdbModel.Store.usp_users_role" />
         </EntityContainerMapping>

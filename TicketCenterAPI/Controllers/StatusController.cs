@@ -1,31 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using System.Data.Entity.Infrastructure;
 
 namespace TicketCenterAPI.Controllers
 {
-    public class TicketController : ApiController
+    public class StatusController : ApiController
     {
-
-        //get all  tickets
         [HttpGet]
-        public HttpResponseMessage GetAllTickets()
+        public HttpResponseMessage GetAllStatus()
         {
+            //using method calls dispose to dispose any resourses after the  call
+            //context access the data model from the database
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                //get all tickets
-                var tickets = context.sp_select_all_tickets();
+
+                //    alternative to using store procedure
+                var status = context.sp_select_all_status();
+
+
+                //write the query to search the database linq 
+                //   var query = (from c in context.Categories select c).ToList();
+
 
                 string result = "";
 
-                if (tickets != null)
+                if (status != null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(tickets);
+                    //if we have a results get categories to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(status);
                 }
 
                 var response = new HttpResponseMessage
@@ -39,22 +47,21 @@ namespace TicketCenterAPI.Controllers
 
 
                 return response;
-
             }
+
         }
 
-        // Insert Employee  
-        // POST api/Tickets
+        //add status
         [HttpPost]
-        [ActionName("addticket")]
-        public HttpResponseMessage AddTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
+        [ActionName("addstatus")]
+        public HttpResponseMessage AddStatus([FromBody]TicketCenterAPI.Models.Status status)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
                 //by default ticket are open
-                context.ins_tickets(ticket.Description, "", ticket.CategoryId, 1);
+                context.ins_status(status.StatusDesc);
 
                 var response = new HttpResponseMessage
                 {
@@ -70,10 +77,9 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
-
         [HttpPut]
-        [ActionName("updateticket")]
-        public HttpResponseMessage UpdateTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
+        [ActionName("updatestatus")]
+        public HttpResponseMessage UpdateStatus([FromBody]TicketCenterAPI.Models.Status status)
         {
 
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -90,7 +96,7 @@ namespace TicketCenterAPI.Controllers
                 try
                 {
                     //todo change name of SP admin used too
-                    context.usp_techician_ticket(ticket.TicketId, ticket.StatusId, ticket.Comment);
+                    context.usp_status(status.StatusId, status.StatusDesc);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
@@ -106,28 +112,28 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
-         
-        
+
+
         [HttpGet]
-        public HttpResponseMessage GetTicketById(int id)
+        public HttpResponseMessage GetStatusById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                var ticket = context.sp_get_ticket_by_id(id);
-                
+                var status = context.sp_get_status_by_id(id); ;
+
                 string result = "";
 
-                if (ticket != null)
+                if (status != null)
                 {
                     //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
-                    
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(status);
+
                 }
                 else
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
                 }
 
                 var response = new HttpResponseMessage
@@ -143,5 +149,7 @@ namespace TicketCenterAPI.Controllers
                 return response;
             }
         }
-    } 
+    }
+
 }
+

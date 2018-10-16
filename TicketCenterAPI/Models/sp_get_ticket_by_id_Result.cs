@@ -10,20 +10,16 @@
 namespace TicketCenterAPI.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Status
+    public partial class sp_get_ticket_by_id_Result
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Status()
-        {
-            this.Tickets = new HashSet<Ticket>();
-        }
-    
+        public int TicketId { get; set; }
+        public string Description { get; set; }
+        public string Comment { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryDesc { get; set; }
         public int StatusId { get; set; }
         public string StatusDesc { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Ticket> Tickets { get; set; }
     }
 }

@@ -14,6 +14,6 @@ namespace TicketCenterAPI.Models
     public partial class sp_select_all_categories_Result
     {
         public int CategoryId { get; set; }
-        public string Category { get; set; }
+        public string CategoryDesc { get; set; }
     }
 }

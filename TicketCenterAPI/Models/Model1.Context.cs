@@ -35,6 +35,24 @@ namespace TicketCenterAPI.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserTicket> UserTickets { get; set; }
     
+        public virtual int ins_category(string category)
+        {
+            var categoryParameter = category != null ?
+                new ObjectParameter("category", category) :
+                new ObjectParameter("category", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_category", categoryParameter);
+        }
+    
+        public virtual int ins_status(string status)
+        {
+            var statusParameter = status != null ?
+                new ObjectParameter("status", status) :
+                new ObjectParameter("status", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_status", statusParameter);
+        }
+    
         public virtual int ins_tickets(string description, string comment, Nullable<int> categoryId, Nullable<int> statusId)
         {
             var descriptionParameter = description != null ?
@@ -89,6 +107,33 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_user", firstNameParameter, lastNameParameter, emailParameter, passwordParameter, isActivateParameter, isLockedParameter, rolesIdParameter);
         }
     
+        public virtual ObjectResult<sp_get_category_by_id_Result> sp_get_category_by_id(Nullable<int> id)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("id", id) :
+                new ObjectParameter("id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_category_by_id_Result>("sp_get_category_by_id", idParameter);
+        }
+    
+        public virtual ObjectResult<sp_get_status_by_id_Result> sp_get_status_by_id(Nullable<int> id)
+        {
+            var idParameter = id.HasValue ?
+                new ObjectParameter("id", id) :
+                new ObjectParameter("id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_status_by_id_Result>("sp_get_status_by_id", idParameter);
+        }
+    
+        public virtual ObjectResult<sp_get_ticket_by_id_Result> sp_get_ticket_by_id(Nullable<int> ticketId)
+        {
+            var ticketIdParameter = ticketId.HasValue ?
+                new ObjectParameter("TicketId", ticketId) :
+                new ObjectParameter("TicketId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_ticket_by_id_Result>("sp_get_ticket_by_id", ticketIdParameter);
+        }
+    
         public virtual ObjectResult<sp_select_all_categories_Result> sp_select_all_categories()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_categories_Result>("sp_select_all_categories");
@@ -97,6 +142,11 @@ namespace TicketCenterAPI.Models
         public virtual ObjectResult<sp_select_all_roles_Result> sp_select_all_roles()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_roles_Result>("sp_select_all_roles");
+        }
+    
+        public virtual ObjectResult<sp_select_all_status_Result> sp_select_all_status()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_status_Result>("sp_select_all_status");
         }
     
         public virtual ObjectResult<sp_select_all_tickets_Result> sp_select_all_tickets()
@@ -112,6 +162,32 @@ namespace TicketCenterAPI.Models
         public virtual ObjectResult<sp_selectAllStatus_Result> sp_selectAllStatus()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_selectAllStatus_Result>("sp_selectAllStatus");
+        }
+    
+        public virtual int usp_category(Nullable<int> categoryId, string category)
+        {
+            var categoryIdParameter = categoryId.HasValue ?
+                new ObjectParameter("categoryId", categoryId) :
+                new ObjectParameter("categoryId", typeof(int));
+    
+            var categoryParameter = category != null ?
+                new ObjectParameter("category", category) :
+                new ObjectParameter("category", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_category", categoryIdParameter, categoryParameter);
+        }
+    
+        public virtual int usp_status(Nullable<int> statusId, string status)
+        {
+            var statusIdParameter = statusId.HasValue ?
+                new ObjectParameter("statusId", statusId) :
+                new ObjectParameter("statusId", typeof(int));
+    
+            var statusParameter = status != null ?
+                new ObjectParameter("status", status) :
+                new ObjectParameter("status", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_status", statusIdParameter, statusParameter);
         }
     
         public virtual int usp_techician_ticket(Nullable<int> ticketId, Nullable<int> statusId, string comments)

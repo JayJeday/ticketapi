@@ -26,9 +26,11 @@ namespace TicketCenterAPI.Models
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CategoryId { get; set; }
         public Nullable<int> StatusId { get; set; }
+        public Nullable<int> UserId { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual Status Status { get; set; }
+        public virtual User User { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserTicket> UserTickets { get; set; }
     }

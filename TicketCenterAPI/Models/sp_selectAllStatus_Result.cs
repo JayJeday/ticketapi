@@ -14,6 +14,6 @@ namespace TicketCenterAPI.Models
     public partial class sp_selectAllStatus_Result
     {
         public int StatusId { get; set; }
-        public string Status { get; set; }
+        public string StatusDesc { get; set; }
     }
 }
