@@ -12,8 +12,13 @@ namespace TicketCenterAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class TechCategoryRel
+    public partial class TechCategory
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int CategoryId { get; set; }
+    
+        public virtual Category Category { get; set; }
+        public virtual User User { get; set; }
     }
 }

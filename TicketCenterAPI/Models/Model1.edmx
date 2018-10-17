@@ -26,11 +26,13 @@
           <Property Name="StatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="StatusDesc" Type="varchar" MaxLength="20" />
         </EntityType>
-        <EntityType Name="TechCategoryRel">
+        <EntityType Name="TechCategory">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Tickets">
           <Key>
@@ -65,6 +67,30 @@
           <Property Name="userId" Type="int" />
           <Property Name="ticketId" Type="int" />
         </EntityType>
+        <Association Name="FK_TechCategory_Categories">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
+          <End Role="TechCategory" Type="Self.TechCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="TechCategory">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TechCategory_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="TechCategory" Type="Self.TechCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TechCategory">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tickets_Categories">
           <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
           <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
@@ -194,10 +220,18 @@
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TechCategoryRel" EntityType="Self.TechCategoryRel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TechCategory" EntityType="Self.TechCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tickets" EntityType="Self.Tickets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserTickets" EntityType="Self.UserTickets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_TechCategory_Categories" Association="Self.FK_TechCategory_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="TechCategory" EntitySet="TechCategory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TechCategory_Users" Association="Self.FK_TechCategory_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="TechCategory" EntitySet="TechCategory" />
+          </AssociationSet>
           <AssociationSet Name="FK_Tickets_Categories" Association="Self.FK_Tickets_Categories">
             <End Role="Categories" EntitySet="Categories" />
             <End Role="Tickets" EntitySet="Tickets" />
@@ -234,6 +268,7 @@
           </Key>
           <Property Name="CategoryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="CategoryDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="TechCategories" Relationship="Self.FK_TechCategory_Categories" FromRole="Categories" ToRole="TechCategory" />
           <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Categories" FromRole="Categories" ToRole="Tickets" />
         </EntityType>
         <EntityType Name="Role">
@@ -252,11 +287,15 @@
           <Property Name="StatusDesc" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Tickets" Relationship="Self.FK_Tickets_Status" FromRole="Status" ToRole="Tickets" />
         </EntityType>
-        <EntityType Name="TechCategoryRel">
+        <EntityType Name="TechCategory">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_TechCategory_Categories" FromRole="TechCategory" ToRole="Categories" />
+          <NavigationProperty Name="User" Relationship="Self.FK_TechCategory_Users" FromRole="TechCategory" ToRole="Users" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -287,6 +326,7 @@
           <Property Name="IsLocked" Type="Boolean" />
           <Property Name="RolesId" Type="Int32" />
           <NavigationProperty Name="Role" Relationship="Self.FK_Users_Roles" FromRole="Users" ToRole="Roles" />
+          <NavigationProperty Name="TechCategories" Relationship="Self.FK_TechCategory_Users" FromRole="Users" ToRole="TechCategory" />
           <NavigationProperty Name="Tickets" Relationship="Self.FK_User_Ticket" FromRole="Users" ToRole="Tickets" />
           <NavigationProperty Name="UserTickets" Relationship="Self.FK_UserTickets_UserTickets" FromRole="Users" ToRole="UserTickets" />
         </EntityType>
@@ -300,6 +340,18 @@
           <NavigationProperty Name="Ticket" Relationship="Self.FK_UserTickets_Tickets" FromRole="UserTickets" ToRole="Tickets" />
           <NavigationProperty Name="User" Relationship="Self.FK_UserTickets_UserTickets" FromRole="UserTickets" ToRole="Users" />
         </EntityType>
+        <Association Name="FK_TechCategory_Categories">
+          <End Role="Categories" Type="Self.Category" Multiplicity="1" />
+          <End Role="TechCategory" Type="Self.TechCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categories">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="TechCategory">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Tickets_Categories">
           <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
           <End Role="Tickets" Type="Self.Ticket" Multiplicity="*" />
@@ -333,6 +385,18 @@
             </Principal>
             <Dependent Role="Tickets">
               <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TechCategory_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="TechCategory" Type="Self.TechCategory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="TechCategory">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -376,10 +440,14 @@
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Roles" EntityType="Self.Role" />
           <EntitySet Name="Status" EntityType="Self.Status" />
-          <EntitySet Name="TechCategoryRels" EntityType="Self.TechCategoryRel" />
+          <EntitySet Name="TechCategories" EntityType="Self.TechCategory" />
           <EntitySet Name="Tickets" EntityType="Self.Ticket" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="UserTickets" EntityType="Self.UserTicket" />
+          <AssociationSet Name="FK_TechCategory_Categories" Association="Self.FK_TechCategory_Categories">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="TechCategory" EntitySet="TechCategories" />
+          </AssociationSet>
           <AssociationSet Name="FK_Tickets_Categories" Association="Self.FK_Tickets_Categories">
             <End Role="Categories" EntitySet="Categories" />
             <End Role="Tickets" EntitySet="Tickets" />
@@ -391,6 +459,10 @@
           <AssociationSet Name="FK_Tickets_Status" Association="Self.FK_Tickets_Status">
             <End Role="Status" EntitySet="Status" />
             <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TechCategory_Users" Association="Self.FK_TechCategory_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="TechCategory" EntitySet="TechCategories" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Ticket" Association="Self.FK_User_Ticket">
             <End Role="Users" EntitySet="Users" />
@@ -502,14 +574,12 @@
           <Property Type="Int32" Name="RolesId" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_select_all_users_Result">
-          <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
-          <Property Type="Boolean" Name="IsActivate" Nullable="true" />
-          <Property Type="Boolean" Name="IsLocked" Nullable="true" />
-          <Property Type="Int32" Name="RolesId" Nullable="true" />
+          <Property Type="Int32" Name="CategoryId" Nullable="false" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="RoleId" Nullable="false" />
+          <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
         </ComplexType>
         <ComplexType Name="sp_selectAllStatus_Result">
           <Property Type="Int32" Name="StatusId" Nullable="false" />
@@ -545,10 +615,12 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TechCategoryRels">
-            <EntityTypeMapping TypeName="ticketcenterdbModel.TechCategoryRel">
-              <MappingFragment StoreEntitySet="TechCategoryRel">
-                <ScalarProperty Name="id" ColumnName="id" />
+          <EntitySetMapping Name="TechCategories">
+            <EntityTypeMapping TypeName="ticketcenterdbModel.TechCategory">
+              <MappingFragment StoreEntitySet="TechCategory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -666,14 +738,12 @@
           <FunctionImportMapping FunctionImportName="sp_select_all_users" FunctionName="ticketcenterdbModel.Store.sp_select_all_users">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_users_Result">
-                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="IsActivate" ColumnName="IsActivate" />
-                <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
-                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

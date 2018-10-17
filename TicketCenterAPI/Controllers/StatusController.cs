@@ -72,8 +72,8 @@ namespace TicketCenterAPI.Controllers
                 response.Content.Headers.Clear();
                 response.Content.Headers.Add("Content-Type", "application/json");
 
-
-                return response;
+                //TODO delete response
+                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
             }
         }
 

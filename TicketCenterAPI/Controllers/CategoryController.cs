@@ -12,7 +12,6 @@ namespace TicketCenterAPI.Controllers
     {
 
         [HttpGet]
-        [ActionName("getallcategories")]
         public HttpResponseMessage GetAllCategories()
         {
             //using method calls dispose to dispose any resourses after the  call
@@ -75,7 +74,7 @@ namespace TicketCenterAPI.Controllers
                 response.Content.Headers.Add("Content-Type", "application/json");
 
 
-                return response;
+                return Request.CreateResponse(HttpStatusCode.OK, "Saved succesfull");
             }
         }
 

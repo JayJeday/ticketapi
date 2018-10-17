@@ -11,7 +11,6 @@ namespace TicketCenterAPI.Controllers
     public class UserController : ApiController
     {
         [HttpGet]
-        [ActionName("getusers")]
         public HttpResponseMessage GetAllUser()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -109,38 +108,6 @@ namespace TicketCenterAPI.Controllers
                 };
 
                 return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
-            }
-        }
-
-        [HttpGet]
-        [ActionName("getroles")]
-        public HttpResponseMessage GetRoles()
-        {
-            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
-            {
-                context.Configuration.ProxyCreationEnabled = false;
-
-                var roles = context.sp_select_all_roles();
-
-                string result = "";
-
-                if (roles != null)
-                {
-                    //if we have a results get categories to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(roles);
-                }
-
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
-
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return response;
             }
         }
 

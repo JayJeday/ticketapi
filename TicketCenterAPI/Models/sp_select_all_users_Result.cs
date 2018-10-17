@@ -13,13 +13,11 @@ namespace TicketCenterAPI.Models
     
     public partial class sp_select_all_users_Result
     {
-        public int id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public Nullable<bool> IsActivate { get; set; }
-        public Nullable<bool> IsLocked { get; set; }
-        public Nullable<int> RolesId { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryDesc { get; set; }
+        public int RoleId { get; set; }
+        public string Role { get; set; }
     }
 }

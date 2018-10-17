@@ -30,7 +30,7 @@ namespace TicketCenterAPI.Models
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Status> Status { get; set; }
-        public virtual DbSet<TechCategoryRel> TechCategoryRels { get; set; }
+        public virtual DbSet<TechCategory> TechCategories { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserTicket> UserTickets { get; set; }
