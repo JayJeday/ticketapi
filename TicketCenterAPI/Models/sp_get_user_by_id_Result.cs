@@ -11,16 +11,15 @@ namespace TicketCenterAPI.Models
 {
     using System;
     
-    public partial class sp_get_ticket_by_id_Result
+    public partial class sp_get_user_by_id_Result
     {
-        public int TicketId { get; set; }
-        public string Description { get; set; }
-        public string Comment { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<int> UserId { get; set; }
-        public int CategoryId { get; set; }
+        public int id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public Nullable<int> CategoryId { get; set; }
         public string CategoryDesc { get; set; }
-        public int StatusId { get; set; }
-        public string StatusDesc { get; set; }
+        public Nullable<int> RoleId { get; set; }
+        public string Role { get; set; }
     }
 }

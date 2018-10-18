@@ -134,6 +134,15 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_ticket_by_id_Result>("sp_get_ticket_by_id", ticketIdParameter);
         }
     
+        public virtual ObjectResult<sp_get_user_by_id_Result> sp_get_user_by_id(Nullable<int> userId)
+        {
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_user_by_id_Result>("sp_get_user_by_id", userIdParameter);
+        }
+    
         public virtual ObjectResult<sp_select_all_categories_Result> sp_select_all_categories()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_categories_Result>("sp_select_all_categories");
@@ -190,7 +199,7 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_status", statusIdParameter, statusParameter);
         }
     
-        public virtual int usp_techician_ticket(Nullable<int> ticketId, Nullable<int> statusId, string comments)
+        public virtual int usp_ticket(Nullable<int> ticketId, Nullable<int> statusId, string comments)
         {
             var ticketIdParameter = ticketId.HasValue ?
                 new ObjectParameter("ticketId", ticketId) :
@@ -204,7 +213,24 @@ namespace TicketCenterAPI.Models
                 new ObjectParameter("comments", comments) :
                 new ObjectParameter("comments", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_techician_ticket", ticketIdParameter, statusIdParameter, commentsParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_ticket", ticketIdParameter, statusIdParameter, commentsParameter);
+        }
+    
+        public virtual int usp_user(Nullable<int> userId, Nullable<int> categoryId, Nullable<int> roleId)
+        {
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(int));
+    
+            var categoryIdParameter = categoryId.HasValue ?
+                new ObjectParameter("categoryId", categoryId) :
+                new ObjectParameter("categoryId", typeof(int));
+    
+            var roleIdParameter = roleId.HasValue ?
+                new ObjectParameter("roleId", roleId) :
+                new ObjectParameter("roleId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_user", userIdParameter, categoryIdParameter, roleIdParameter);
         }
     
         public virtual int usp_users_role(Nullable<int> roleId, Nullable<int> userId)

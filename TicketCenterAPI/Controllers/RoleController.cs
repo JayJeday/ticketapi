@@ -11,7 +11,6 @@ namespace TicketCenterAPI.Controllers
     {
 
         [HttpGet]
-        [ActionName("getroles")]
         public HttpResponseMessage GetRoles()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())

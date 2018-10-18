@@ -5,6 +5,7 @@ using System.Web.Http;
 using System.Data.Entity.Infrastructure;
 using TicketCenterAPI.Models;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 namespace TicketCenterAPI.Controllers
 {
@@ -44,6 +45,43 @@ namespace TicketCenterAPI.Controllers
 
         }
 
+        [HttpGet]
+        public HttpResponseMessage GetUserById(int id)
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                var user = context.sp_get_user_by_id(id);
+
+                string result = "";
+
+                if (user != null)
+                {
+                    //convert list to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(user);
+
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                }
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent(result),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return response;
+            }
+        }
+
+
         [HttpPost]
         [ActionName("loggin")]
         public async System.Threading.Tasks.Task<HttpResponseMessage> Loggin()
@@ -78,8 +116,7 @@ namespace TicketCenterAPI.Controllers
 
        
         [HttpPut]
-        [ActionName("updateuser")]
-        public HttpResponseMessage UpdateUser()
+        public HttpResponseMessage UpdateUser(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -94,8 +131,33 @@ namespace TicketCenterAPI.Controllers
 
                 try
                 {
-                    //todo change name of SP admin used too
+
+                    //alternative => req.Content.ReadAsStringAsync().Result;
+
+                    //object then unbox to int
+                    int id = data.id;
+                    object roleId = data.RoleId;
+                    object categoryId = data.CategoryId;
+
+                    //if roleId is not null => role was selected to update
+                    if(data.RoleId != null)
+                    {
+                        int i = data.RoleId;
+                      context.usp_user(id,null,i);
+                    }
+                    else if (categoryId != null)
+                    {
+                        //category was updated pass null to role
+                        int i = data.CategoryId;
+                        context.usp_user(id,i,null);
+                    }
+                   
+
+
+                    System.Diagnostics.Debug.WriteLine(roleId + " and " + categoryId);
+
                     
+
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
