@@ -187,6 +187,10 @@
         <Function Name="sp_get_category_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_get_login" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="password" Type="varchar" Mode="In" />
+        </Function>
         <Function Name="sp_get_status_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
         </Function>
@@ -195,6 +199,9 @@
         </Function>
         <Function Name="sp_get_user_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_get_user_ticket_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="userId" Type="int" Mode="In" />
         </Function>
         <Function Name="sp_select_all_categories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_select_all_roles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -212,6 +219,7 @@
         </Function>
         <Function Name="usp_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ticketId" Type="int" Mode="In" />
+          <Parameter Name="userId" Type="int" Mode="In" />
           <Parameter Name="statusId" Type="int" Mode="In" />
           <Parameter Name="comments" Type="varchar" Mode="In" />
         </Function>
@@ -508,6 +516,10 @@
           <FunctionImport Name="sp_get_category_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_category_by_id_Result)">
             <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_get_login" ReturnType="Collection(ticketcenterdbModel.sp_get_login_Result)">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="sp_get_status_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_status_by_id_Result)">
             <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -516,6 +528,9 @@
           </FunctionImport>
           <FunctionImport Name="sp_get_user_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_user_by_id_Result)">
             <Parameter Name="UserId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_get_user_ticket_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_user_ticket_by_id_Result)">
+            <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="sp_select_all_categories" ReturnType="Collection(ticketcenterdbModel.sp_select_all_categories_Result)" />
           <FunctionImport Name="sp_select_all_roles" ReturnType="Collection(ticketcenterdbModel.sp_select_all_roles_Result)" />
@@ -533,6 +548,7 @@
           </FunctionImport>
           <FunctionImport Name="usp_ticket">
             <Parameter Name="ticketId" Mode="In" Type="Int32" />
+            <Parameter Name="userId" Mode="In" Type="Int32" />
             <Parameter Name="statusId" Mode="In" Type="Int32" />
             <Parameter Name="comments" Mode="In" Type="String" />
           </FunctionImport>
@@ -549,6 +565,13 @@
         <ComplexType Name="sp_get_category_by_id_Result">
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
           <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_get_login_Result">
+          <Property Type="Int32" Name="id" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="RoleId" Nullable="false" />
+          <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
         </ComplexType>
         <ComplexType Name="sp_get_status_by_id_Result">
           <Property Type="Int32" Name="StatusId" Nullable="false" />
@@ -574,6 +597,19 @@
           <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="RoleId" Nullable="true" />
           <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_get_user_ticket_by_id_Result">
+          <Property Type="Int32" Name="TicketId" Nullable="false" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="CategoryId" Nullable="false" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="UserId" Nullable="true" />
+          <Property Type="String" Name="TechName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="RolesId" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_select_all_categories_Result">
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
@@ -700,6 +736,17 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_get_login" FunctionName="ticketcenterdbModel.Store.sp_get_login">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_login_Result">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_get_status_by_id" FunctionName="ticketcenterdbModel.Store.sp_get_status_by_id">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_status_by_id_Result">
@@ -734,6 +781,23 @@
                 <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_get_user_ticket_by_id" FunctionName="ticketcenterdbModel.Store.sp_get_user_ticket_by_id">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_user_ticket_by_id_Result">
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="TechName" ColumnName="TechName" />
+                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

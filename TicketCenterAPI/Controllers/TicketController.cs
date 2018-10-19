@@ -90,7 +90,7 @@ namespace TicketCenterAPI.Controllers
                 try
                 {
                     //todo change name of SP admin used too
-                    context.usp_ticket(ticket.TicketId, ticket.StatusId, ticket.Comment);
+                    context.usp_ticket(ticket.TicketId,ticket.UserId,ticket.StatusId, ticket.Comment);
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
