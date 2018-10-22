@@ -12,6 +12,7 @@ namespace TicketCenterAPI.Controllers
     public class UserController : ApiController
     {
         [HttpGet]
+        [Authorize]
         public HttpResponseMessage GetAllUser()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -46,6 +47,7 @@ namespace TicketCenterAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public HttpResponseMessage GetUserById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -82,8 +84,9 @@ namespace TicketCenterAPI.Controllers
         }
 
 
-     
+        
         [HttpPost]
+        [Authorize]
         public HttpResponseMessage AddUser(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -123,6 +126,7 @@ namespace TicketCenterAPI.Controllers
         }
 
         [Route("api/user/techs")]
+        [Authorize]
         public HttpResponseMessage GetAllTechs()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -158,8 +162,54 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
+        [Route("api/user/tech/cat")]
+        [HttpPut]
+        [Authorize]
+        public HttpResponseMessage UpdateTechCat(dynamic data)
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+
+                context.Configuration.ProxyCreationEnabled = false;
+
+                //is the model with binding is incorrect
+                if (!ModelState.IsValid)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                }
+
+                try
+                {
+
+                    //alternative => req.Content.ReadAsStringAsync().Result;
+
+                    //object then unbox to int
+                    int userId = data.UserId;
+                    int categoryId = data.CategoryId;
+
+                    context.usp_tech_cat(categoryId,userId);
+
+                 //   System.Diagnostics.Debug.WriteLine(roleId + " and " + categoryId);
+
+
+
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex);
+                }
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent("Successfull saved"),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+            }
+        }
 
         [HttpPut]
+        [Authorize]
         public HttpResponseMessage UpdateUser(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())

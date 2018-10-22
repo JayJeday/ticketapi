@@ -228,6 +228,19 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_status", statusIdParameter, statusParameter);
         }
     
+        public virtual int usp_tech_cat(Nullable<int> categoryId, Nullable<int> userId)
+        {
+            var categoryIdParameter = categoryId.HasValue ?
+                new ObjectParameter("categoryId", categoryId) :
+                new ObjectParameter("categoryId", typeof(int));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("userId", userId) :
+                new ObjectParameter("userId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_tech_cat", categoryIdParameter, userIdParameter);
+        }
+    
         public virtual int usp_ticket(Nullable<int> ticketId, Nullable<int> userId, Nullable<int> statusId, string comments)
         {
             var ticketIdParameter = ticketId.HasValue ?

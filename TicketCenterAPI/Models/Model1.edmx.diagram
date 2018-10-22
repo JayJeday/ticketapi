@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7cdf367424224b6ca031d179b87c80fe" Name="Diagram1">
+      <Diagram DiagramId="9ba3894ac2b946c09fed44b60d89b371" Name="Diagram1">
         <EntityTypeShape EntityType="ticketcenterdbModel.Category" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ticketcenterdbModel.Role" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
         <EntityTypeShape EntityType="ticketcenterdbModel.Status" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />

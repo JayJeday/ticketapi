@@ -194,6 +194,10 @@
           <Parameter Name="statusId" Type="int" Mode="In" />
           <Parameter Name="status" Type="varchar" Mode="In" />
         </Function>
+        <Function Name="usp_tech_cat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="categoryId" Type="int" Mode="In" />
+          <Parameter Name="userId" Type="int" Mode="In" />
+        </Function>
         <Function Name="usp_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ticketId" Type="int" Mode="In" />
           <Parameter Name="userId" Type="int" Mode="In" />
@@ -479,6 +483,10 @@
           <FunctionImport Name="usp_status">
             <Parameter Name="statusId" Mode="In" Type="Int32" />
             <Parameter Name="status" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="usp_tech_cat">
+            <Parameter Name="categoryId" Mode="In" Type="Int32" />
+            <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="usp_ticket">
             <Parameter Name="ticketId" Mode="In" Type="Int32" />
@@ -845,6 +853,7 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="usp_category" FunctionName="ticketcenterdbModel.Store.usp_category" />
           <FunctionImportMapping FunctionImportName="usp_status" FunctionName="ticketcenterdbModel.Store.usp_status" />
+          <FunctionImportMapping FunctionImportName="usp_tech_cat" FunctionName="ticketcenterdbModel.Store.usp_tech_cat" />
           <FunctionImportMapping FunctionImportName="usp_ticket" FunctionName="ticketcenterdbModel.Store.usp_ticket" />
           <FunctionImportMapping FunctionImportName="usp_user" FunctionName="ticketcenterdbModel.Store.usp_user" />
           <FunctionImportMapping FunctionImportName="usp_users_role" FunctionName="ticketcenterdbModel.Store.usp_users_role" />

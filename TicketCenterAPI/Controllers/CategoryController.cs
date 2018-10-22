@@ -12,6 +12,8 @@ namespace TicketCenterAPI.Controllers
     {
 
         [HttpGet]
+        [Authorize]
+        [Route("api/category/all")]
         public HttpResponseMessage GetAllCategories()
         {
             //using method calls dispose to dispose any resourses after the  call
