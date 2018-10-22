@@ -46,7 +46,6 @@ namespace TicketCenterAPI.Controllers
         // Insert Employee  
         // POST api/Tickets
         [HttpPost]
-        [ActionName("addticket")]
         public HttpResponseMessage AddTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -66,7 +65,7 @@ namespace TicketCenterAPI.Controllers
                 response.Content.Headers.Add("Content-Type", "application/json");
 
 
-                return response;
+                return Request.CreateResponse(HttpStatusCode.OK, "Ticket succesfull created");
             }
         }
 

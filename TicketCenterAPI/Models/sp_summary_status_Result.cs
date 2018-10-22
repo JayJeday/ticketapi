@@ -10,12 +10,10 @@
 namespace TicketCenterAPI.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class TechCategory
+    public partial class sp_summary_status_Result
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public int CategoryId { get; set; }
+        public Nullable<int> statusNumber { get; set; }
+        public string StatusDesc { get; set; }
     }
 }

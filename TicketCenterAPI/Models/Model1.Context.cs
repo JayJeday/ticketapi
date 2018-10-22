@@ -74,7 +74,7 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_tickets", descriptionParameter, commentParameter, categoryIdParameter, statusIdParameter);
         }
     
-        public virtual int ins_user(string firstName, string lastName, string email, string password, Nullable<bool> isActivate, Nullable<bool> isLocked, Nullable<int> rolesId)
+        public virtual int ins_user(string firstName, string lastName, string email, Nullable<int> rolesId, Nullable<int> categoryId)
         {
             var firstNameParameter = firstName != null ?
                 new ObjectParameter("FirstName", firstName) :
@@ -88,23 +88,20 @@ namespace TicketCenterAPI.Models
                 new ObjectParameter("Email", email) :
                 new ObjectParameter("Email", typeof(string));
     
-            var passwordParameter = password != null ?
-                new ObjectParameter("Password", password) :
-                new ObjectParameter("Password", typeof(string));
-    
-            var isActivateParameter = isActivate.HasValue ?
-                new ObjectParameter("IsActivate", isActivate) :
-                new ObjectParameter("IsActivate", typeof(bool));
-    
-            var isLockedParameter = isLocked.HasValue ?
-                new ObjectParameter("IsLocked", isLocked) :
-                new ObjectParameter("IsLocked", typeof(bool));
-    
             var rolesIdParameter = rolesId.HasValue ?
                 new ObjectParameter("RolesId", rolesId) :
                 new ObjectParameter("RolesId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_user", firstNameParameter, lastNameParameter, emailParameter, passwordParameter, isActivateParameter, isLockedParameter, rolesIdParameter);
+            var categoryIdParameter = categoryId.HasValue ?
+                new ObjectParameter("CategoryId", categoryId) :
+                new ObjectParameter("CategoryId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_user", firstNameParameter, lastNameParameter, emailParameter, rolesIdParameter, categoryIdParameter);
+        }
+    
+        public virtual ObjectResult<sp_get_all_technician_Result> sp_get_all_technician()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_all_technician_Result>("sp_get_all_technician");
         }
     
         public virtual ObjectResult<sp_get_category_by_id_Result> sp_get_category_by_id(Nullable<int> id)
@@ -193,6 +190,16 @@ namespace TicketCenterAPI.Models
         public virtual ObjectResult<sp_selectAllStatus_Result> sp_selectAllStatus()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_selectAllStatus_Result>("sp_selectAllStatus");
+        }
+    
+        public virtual ObjectResult<sp_summary_category_Result> sp_summary_category()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_summary_category_Result>("sp_summary_category");
+        }
+    
+        public virtual ObjectResult<sp_summary_status_Result> sp_summary_status()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_summary_status_Result>("sp_summary_status");
         }
     
         public virtual int usp_category(Nullable<int> categoryId, string category)

@@ -114,6 +114,46 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
+
+        [HttpGet]
+        [Route("api/category/summary")]
+        public HttpResponseMessage GetCategorySumary()
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                var category=context.sp_summary_category();
+
+                string result = "";
+
+                if (category != null)
+                {
+                    //convert list to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(category);
+
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
+                }
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent(result),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return response;
+            }
+        }
+
+
+
         [HttpGet]
         public HttpResponseMessage GetCategoryById(int id)
         {

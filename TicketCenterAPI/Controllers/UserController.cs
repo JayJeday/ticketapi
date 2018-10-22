@@ -82,39 +82,83 @@ namespace TicketCenterAPI.Controllers
         }
 
 
+     
         [HttpPost]
-        [ActionName("loggin")]
-        public async System.Threading.Tasks.Task<HttpResponseMessage> Loggin()
+        public HttpResponseMessage AddUser(dynamic data)
         {
-            string requestBody;
-            string cred;
-            using(var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                if (!ModelState.IsValid)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-                }
 
-                try
+                string firstname = data.FirstName;
+                string lastname = data.LastName;
+                string email = data.Email;
+                int roleId = data.RoleId;
+                
+                if(data.CategoryId == null)
                 {
-                     requestBody = await Request.Content.ReadAsStringAsync();
-                     cred = Newtonsoft.Json.JsonConvert.DeserializeObject <string> (requestBody);
-
-                    Trace.WriteLine(requestBody);
-
+                context.ins_user(firstname,lastname,email,roleId,null);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                else
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.Unauthorized, ex);
+                    int categoryId = data.CategoryId;
+                    context.ins_user(firstname, lastname, email, roleId, categoryId);
                 }
+                //by default ticket are open
+                
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent("Successfull saved"),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User succesfull created");
             }
+        }
 
-            return Request.CreateResponse(HttpStatusCode.OK, cred);
-        } 
+        [Route("api/user/techs")]
+        public HttpResponseMessage GetAllTechs()
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
 
-       
+                var techs = context.sp_get_all_technician();
+
+                string result = "";
+
+                if (techs != null)
+                {
+                    //convert list to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(techs);
+
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
+                }
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent(result),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return response;
+            }
+        }
+
+
         [HttpPut]
         public HttpResponseMessage UpdateUser(dynamic data)
         {

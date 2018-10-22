@@ -73,9 +73,49 @@ namespace TicketCenterAPI.Controllers
                 response.Content.Headers.Add("Content-Type", "application/json");
 
                 //TODO delete response
-                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+                return Request.CreateResponse(HttpStatusCode.OK, "Succesfull created");
             }
         }
+
+        [HttpGet]
+        [Route("api/status/summary")]
+        public HttpResponseMessage GetStatusSumary()
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                var category = context.sp_summary_status();
+
+                string result = "";
+
+                if (category != null)
+                {
+                    //convert list to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(category);
+
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
+                }
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent(result),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return response;
+            }
+        }
+
+
+
 
         [HttpPut]
         [ActionName("updatestatus")]

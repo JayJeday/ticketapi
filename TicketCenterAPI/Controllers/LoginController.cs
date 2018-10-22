@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -17,13 +18,18 @@ namespace TicketCenterAPI.Controllers
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
+                var count = (from u in context.Users select u).Where(u => u.Email == user.Email && u.Password == user.Password)
+                    .ToList().Count;
+
+
                 //get all tickets
                 var userlogin = context.sp_get_login(user.Email, user.Password);
 
                 string result = "";
 
-                if (userlogin != null)
+                if (userlogin != null && count > 0)
                 {
+                    Debug.WriteLine(userlogin);
                     //convert list to json
                     result = Newtonsoft.Json.JsonConvert.SerializeObject(userlogin);
                 }
