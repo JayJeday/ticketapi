@@ -12,7 +12,6 @@ namespace TicketCenterAPI.Controllers
     {
 
         [HttpGet]
-        [Authorize]
         [Route("api/category/all")]
         public HttpResponseMessage GetAllCategories()
         {

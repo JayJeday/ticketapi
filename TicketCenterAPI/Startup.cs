@@ -9,6 +9,7 @@ using Microsoft.Owin.Security.OAuth;
 using Microsoft.Owin;
 using TicketCenterAPI.DtProviders;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 [assembly: OwinStartup(typeof(TicketCenterAPI.Startup))]
 
@@ -19,6 +20,8 @@ namespace TicketCenterAPI
     {
         public void ConfigureAuth(IAppBuilder app)
         {
+           //remove this
+            app.UseCors(CorsOptions.AllowAll);
 
             var OAuthOptions = new OAuthAuthorizationServerOptions
             {

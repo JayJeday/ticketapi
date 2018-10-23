@@ -12,7 +12,6 @@ namespace TicketCenterAPI.Controllers
     public class UserController : ApiController
     {
         [HttpGet]
-        [Authorize]
         public HttpResponseMessage GetAllUser()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -47,7 +46,6 @@ namespace TicketCenterAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public HttpResponseMessage GetUserById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -86,7 +84,6 @@ namespace TicketCenterAPI.Controllers
 
         
         [HttpPost]
-        [Authorize]
         public HttpResponseMessage AddUser(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -126,7 +123,6 @@ namespace TicketCenterAPI.Controllers
         }
 
         [Route("api/user/techs")]
-        [Authorize]
         public HttpResponseMessage GetAllTechs()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -164,7 +160,6 @@ namespace TicketCenterAPI.Controllers
 
         [Route("api/user/tech/cat")]
         [HttpPut]
-        [Authorize]
         public HttpResponseMessage UpdateTechCat(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -209,7 +204,6 @@ namespace TicketCenterAPI.Controllers
         }
 
         [HttpPut]
-        [Authorize]
         public HttpResponseMessage UpdateUser(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())

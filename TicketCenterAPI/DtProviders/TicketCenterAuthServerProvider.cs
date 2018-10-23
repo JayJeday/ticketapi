@@ -11,11 +11,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web.Http.Cors;
-
+using TicketCenterAPI.Models;
 
 namespace TicketCenterAPI.DtProviders
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
+
     public class TicketCenterAuthServerProvider : OAuthAuthorizationServerProvider
     {
 
@@ -29,7 +29,7 @@ namespace TicketCenterAPI.DtProviders
         {
 
             var identity = new ClaimsIdentity(context.Options.AuthenticationType);
-            context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+       //     context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
 
             using (var db = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -39,27 +39,43 @@ namespace TicketCenterAPI.DtProviders
                     if (user != null)
                     {
                        
-
                         if (!string.IsNullOrEmpty(user.Where(u => u.Email == context.UserName && u.Password == context.Password).FirstOrDefault().Email))
                         {
-                           identity.AddClaim(new Claim("Age", "16"));
 
-                            //Example of how to validate a claim
-                           var props = new AuthenticationProperties(new Dictionary<string, string>
-                            {
+                            //find user
+                             User loginUser = user.Where(u => u.Email == context.UserName && u.Password == context.Password).First();
+
+                            //add intities
+                            identity.AddClaim(new Claim("username", context.UserName));
+                            identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
+
+
+
+
+                            var props = new AuthenticationProperties(new Dictionary<string, string>
+                    {
+                         {
+                             "Email", context.UserName
+                         },
+                         {
+                             "aId", loginUser.id + ""
+                         },
+
+                          {
+                                "FirstName", loginUser.FirstName
+                          },
                                 {
-                                   "userdisplayname", context.UserName
+                                    "LastName", loginUser.LastName
                                 },
-                               {
-                                     "role", "admin"
-                               }
-                             });
+                                {
+                                    "aRoleId", loginUser.RolesId + ""
+                                }
+                    });
+
+                            var ticket = new AuthenticationTicket(identity, props);
+                            context.Validated(ticket);
 
 
-                           var ticket = new AuthenticationTicket(identity, props);
-
-                           context.Validated(identity);
-                            
                         }
                         else
                         {
@@ -76,9 +92,19 @@ namespace TicketCenterAPI.DtProviders
                 return;
             }
 
-
-
         }
+
+
+        //token end point 
+        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
+        {
+            foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
+            {
+                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+            }
+            return Task.FromResult<object>(null);
+        }
+
     }
 
 }
