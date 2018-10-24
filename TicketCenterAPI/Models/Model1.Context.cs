@@ -162,6 +162,23 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_user_ticket_by_id_Result>("sp_get_user_ticket_by_id", userIdParameter);
         }
     
+        public virtual ObjectResult<sp_get_user_ticket_by_id_pagi_Result> sp_get_user_ticket_by_id_pagi(Nullable<int> pageIndex, Nullable<int> pageSize, Nullable<int> userId)
+        {
+            var pageIndexParameter = pageIndex.HasValue ?
+                new ObjectParameter("pageIndex", pageIndex) :
+                new ObjectParameter("pageIndex", typeof(int));
+    
+            var pageSizeParameter = pageSize.HasValue ?
+                new ObjectParameter("pageSize", pageSize) :
+                new ObjectParameter("pageSize", typeof(int));
+    
+            var userIdParameter = userId.HasValue ?
+                new ObjectParameter("UserId", userId) :
+                new ObjectParameter("UserId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_user_ticket_by_id_pagi_Result>("sp_get_user_ticket_by_id_pagi", pageIndexParameter, pageSizeParameter, userIdParameter);
+        }
+    
         public virtual ObjectResult<sp_select_all_categories_Result> sp_select_all_categories()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_select_all_categories_Result>("sp_select_all_categories");

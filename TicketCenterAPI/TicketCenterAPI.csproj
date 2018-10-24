@@ -233,6 +233,9 @@
     <Compile Include="Models\sp_get_user_by_id_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sp_get_user_ticket_by_id_pagi_Result.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sp_get_user_ticket_by_id_Result.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

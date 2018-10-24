@@ -178,6 +178,11 @@
         <Function Name="sp_get_user_ticket_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="userId" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_get_user_ticket_by_id_pagi" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="pageIndex" Type="int" Mode="In" />
+          <Parameter Name="pageSize" Type="int" Mode="In" />
+          <Parameter Name="UserId" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_select_all_categories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_select_all_roles" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_select_all_status" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
@@ -468,6 +473,11 @@
           <FunctionImport Name="sp_get_user_ticket_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_user_ticket_by_id_Result)">
             <Parameter Name="userId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_get_user_ticket_by_id_pagi" ReturnType="Collection(ticketcenterdbModel.sp_get_user_ticket_by_id_pagi_Result)">
+            <Parameter Name="pageIndex" Mode="In" Type="Int32" />
+            <Parameter Name="pageSize" Mode="In" Type="Int32" />
+            <Parameter Name="UserId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="sp_select_all_categories" ReturnType="Collection(ticketcenterdbModel.sp_select_all_categories_Result)" />
           <FunctionImport Name="sp_select_all_roles" ReturnType="Collection(ticketcenterdbModel.sp_select_all_roles_Result)" />
           <FunctionImport Name="sp_select_all_status" ReturnType="Collection(ticketcenterdbModel.sp_select_all_status_Result)" />
@@ -560,6 +570,27 @@
           <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
           <Property Type="Int32" Name="UserId" Nullable="true" />
           <Property Type="String" Name="TechName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="RolesId" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_get_user_ticket_by_id_pagi_Result">
+          <Property Type="Int32" Name="TicketId" Nullable="false" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="CategoryId" Nullable="true" />
+          <Property Type="Int32" Name="StatusId" Nullable="true" />
+          <Property Type="Int32" Name="UserId" Nullable="true" />
+          <Property Type="Int32" Name="CategoryId1" Nullable="false" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="StatusId1" Nullable="false" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
+          <Property Type="Int32" Name="id" Nullable="true" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="IsActivate" Nullable="true" />
+          <Property Type="Boolean" Name="IsLocked" Nullable="true" />
           <Property Type="Int32" Name="RolesId" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_select_all_categories_Result">
@@ -769,6 +800,31 @@
                 <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="TechName" ColumnName="TechName" />
+                <ScalarProperty Name="RolesId" ColumnName="RolesId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_get_user_ticket_by_id_pagi" FunctionName="ticketcenterdbModel.Store.sp_get_user_ticket_by_id_pagi">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_user_ticket_by_id_pagi_Result">
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="CategoryId1" ColumnName="CategoryId1" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+                <ScalarProperty Name="StatusId1" ColumnName="StatusId1" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="IsActivate" ColumnName="IsActivate" />
+                <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
                 <ScalarProperty Name="RolesId" ColumnName="RolesId" />
               </ComplexTypeMapping>
             </ResultMapping>
