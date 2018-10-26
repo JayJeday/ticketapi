@@ -13,6 +13,7 @@ namespace TicketCenterAPI.Models
     
     public partial class sp_select_all_tickets_Result
     {
+        public Nullable<int> TotalCount { get; set; }
         public int TicketId { get; set; }
         public string Description { get; set; }
         public string Comment { get; set; }
@@ -21,8 +22,7 @@ namespace TicketCenterAPI.Models
         public string CategoryDesc { get; set; }
         public int StatusId { get; set; }
         public string StatusDesc { get; set; }
-        public Nullable<int> UserId { get; set; }
-        public string TechName { get; set; }
-        public Nullable<int> RolesId { get; set; }
+        public Nullable<int> RoleId { get; set; }
+        public Nullable<int> TechId { get; set; }
     }
 }

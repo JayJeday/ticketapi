@@ -17,7 +17,7 @@ namespace TicketCenterAPI.Models
         public string Description { get; set; }
         public string Comment { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<int> UserId { get; set; }
+        public Nullable<int> TechId { get; set; }
         public int CategoryId { get; set; }
         public string CategoryDesc { get; set; }
         public int StatusId { get; set; }

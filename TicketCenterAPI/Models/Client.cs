@@ -10,15 +10,14 @@
 namespace TicketCenterAPI.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_get_all_technician_Result
+    public partial class Client
     {
-        public int id { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public Nullable<int> CategoryId { get; set; }
-        public string CategoryDesc { get; set; }
-        public Nullable<int> RoleId { get; set; }
-        public string Role { get; set; }
+        public Nullable<System.DateTime> RegisterDate { get; set; }
     }
 }

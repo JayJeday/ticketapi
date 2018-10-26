@@ -4,19 +4,26 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="6fd968c60bd44791bbf68116e075c0cc" Name="Diagram1">
-        <EntityTypeShape EntityType="ticketcenterdbModel.Category" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ticketcenterdbModel.Role" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ticketcenterdbModel.Status" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ticketcenterdbModel.TechCategory" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ticketcenterdbModel.Ticket" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="ticketcenterdbModel.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="ticketcenterdbModel.UserTicket" Width="1.5" PointX="7.5" PointY="1.5" IsExpanded="true" />
+      <Diagram DiagramId="279331dbbef04507a5393cbe3b64a82e" Name="Diagram1">
+        <EntityTypeShape EntityType="ticketcenterdbModel.Admin" Width="1.5" PointX="3" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.Category" Width="1.5" PointX="3" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.Client" Width="1.5" PointX="7.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.Employee" Width="1.5" PointX="3" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.Role" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.Status" Width="1.5" PointX="3" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.TechCategory" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.Ticket" Width="1.5" PointX="5.25" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.UserHasRole" Width="1.5" PointX="6" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.User" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="ticketcenterdbModel.UserTicket" Width="1.5" PointX="3" PointY="12.375" IsExpanded="true" />
+        <AssociationConnector Association="ticketcenterdbModel.FK_Admins_Users" ManuallyRouted="false" />
         <AssociationConnector Association="ticketcenterdbModel.FK_Tickets_Categories" ManuallyRouted="false" />
-        <AssociationConnector Association="ticketcenterdbModel.FK_Users_Roles" ManuallyRouted="false" />
+        <AssociationConnector Association="ticketcenterdbModel.FK_Employees_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="ticketcenterdbModel.FK_Tickets_Employees" ManuallyRouted="false" />
+        <AssociationConnector Association="ticketcenterdbModel.FK_UserHasRole_Roles" ManuallyRouted="false" />
         <AssociationConnector Association="ticketcenterdbModel.FK_Tickets_Status" ManuallyRouted="false" />
-        <AssociationConnector Association="ticketcenterdbModel.FK_User_Ticket" ManuallyRouted="false" />
-        <AssociationConnector Association="ticketcenterdbModel.FK_UserTickets_Tickets" ManuallyRouted="false" />
+        <AssociationConnector Association="ticketcenterdbModel.FK_Tickets_Tickets" ManuallyRouted="false" />
+        <AssociationConnector Association="ticketcenterdbModel.FK_UserHasRole_Users" ManuallyRouted="false" />
         <AssociationConnector Association="ticketcenterdbModel.FK_UserTickets_UserTickets" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>

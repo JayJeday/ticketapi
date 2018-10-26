@@ -35,6 +35,8 @@ namespace TicketCenterAPI.DtProviders
             {
                 if (db != null)
                 {
+                    
+                    var usersWithRoles = db.UserHasRoles.ToList();
                     var user = db.Users.ToList();
                     if (user != null)
                     {
@@ -42,15 +44,56 @@ namespace TicketCenterAPI.DtProviders
                         if (!string.IsNullOrEmpty(user.Where(u => u.Email == context.UserName && u.Password == context.Password).FirstOrDefault().Email))
                         {
 
-                            //find user
-                             User loginUser = user.Where(u => u.Email == context.UserName && u.Password == context.Password).First();
+                            //find user fix this
+                             User loginUser = user.Where(u => u.Email == context.UserName && u.Password == context.Password).FirstOrDefault();
 
                             //add intities
                             identity.AddClaim(new Claim("username", context.UserName));
                             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
 
+                            var clients = db.Clients.ToList();
+                            Client client = clients.Where(x => x.UserId  == loginUser.id).FirstOrDefault();
+
+                            Employee emp = db.Employees.Where(e => e.UserId == loginUser.id).FirstOrDefault();
 
 
+                            string empId;
+
+                            if (emp == null)
+                            {
+                                empId = "";
+                            }else
+                            {
+                                empId = emp.Id + "";
+                            }
+
+                            string clientId;
+                          
+                            //************ if user is not a client  ***************** 
+                            if (client == null)
+                            {
+                                clientId = "";
+                            }
+                            else
+                            {
+                                //give me the client
+                                clientId = client.Id + "";
+                            }
+
+
+                            string roleId;
+
+                            //get user role
+                            UserHasRole userRole = usersWithRoles.Where(u => u.UserId == loginUser.id).FirstOrDefault();
+
+                            //********** if user is a client role id is empty
+                            if(userRole == null)
+                            {
+                                roleId = "";
+                            }else
+                            {
+                                roleId = userRole.RoleId + "";
+                            }         
 
                             var props = new AuthenticationProperties(new Dictionary<string, string>
                     {
@@ -68,8 +111,15 @@ namespace TicketCenterAPI.DtProviders
                                     "LastName", loginUser.LastName
                                 },
                                 {
-                                    "aRoleId", loginUser.RolesId + ""
+                                    "ClientId",clientId
+                                },
+                                {
+                                    "aRoleId", roleId 
+                                },
+                                {
+                                    "aEmpId", empId
                                 }
+                                
                     });
 
                             var ticket = new AuthenticationTicket(identity, props);

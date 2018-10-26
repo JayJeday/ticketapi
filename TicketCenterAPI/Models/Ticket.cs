@@ -14,24 +14,19 @@ namespace TicketCenterAPI.Models
     
     public partial class Ticket
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Ticket()
-        {
-            this.UserTickets = new HashSet<UserTicket>();
-        }
-    
         public int TicketId { get; set; }
         public string Description { get; set; }
         public string Comment { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<int> CategoryId { get; set; }
         public Nullable<int> StatusId { get; set; }
-        public Nullable<int> UserId { get; set; }
+        public Nullable<int> ClientId { get; set; }
+        public Nullable<int> TechId { get; set; }
     
         public virtual Category Category { get; set; }
+        public virtual Employee Employee { get; set; }
         public virtual Status Status { get; set; }
-        public virtual User User { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserTicket> UserTickets { get; set; }
+        public virtual Ticket Tickets1 { get; set; }
+        public virtual Ticket Ticket1 { get; set; }
     }
 }

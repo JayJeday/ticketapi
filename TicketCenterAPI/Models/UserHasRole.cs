@@ -10,16 +10,15 @@
 namespace TicketCenterAPI.Models
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_get_user_by_id_Result
+    public partial class UserHasRole
     {
-        public int id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public Nullable<int> CategoryId { get; set; }
-        public string CategoryDesc { get; set; }
-        public Nullable<int> RoleId { get; set; }
-        public string Role { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int RoleId { get; set; }
+    
+        public virtual Role Role { get; set; }
+        public virtual User User { get; set; }
     }
 }

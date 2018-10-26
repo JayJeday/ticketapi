@@ -13,24 +13,17 @@ namespace TicketCenterAPI.Models
     
     public partial class sp_get_user_ticket_by_id_pagi_Result
     {
+        public Nullable<int> TotalCount { get; set; }
         public int TicketId { get; set; }
         public string Description { get; set; }
         public string Comment { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<int> CategoryId { get; set; }
-        public Nullable<int> StatusId { get; set; }
-        public Nullable<int> UserId { get; set; }
-        public int CategoryId1 { get; set; }
+        public int CategoryId { get; set; }
         public string CategoryDesc { get; set; }
-        public int StatusId1 { get; set; }
+        public int StatusId { get; set; }
         public string StatusDesc { get; set; }
-        public Nullable<int> id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public Nullable<bool> IsActivate { get; set; }
-        public Nullable<bool> IsLocked { get; set; }
-        public Nullable<int> RolesId { get; set; }
+        public Nullable<int> TechId { get; set; }
+        public string TechName { get; set; }
+        public Nullable<int> RoleId { get; set; }
     }
 }

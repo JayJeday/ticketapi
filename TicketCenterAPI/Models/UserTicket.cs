@@ -18,7 +18,6 @@ namespace TicketCenterAPI.Models
         public Nullable<int> userId { get; set; }
         public Nullable<int> ticketId { get; set; }
     
-        public virtual Ticket Ticket { get; set; }
         public virtual User User { get; set; }
     }
 }

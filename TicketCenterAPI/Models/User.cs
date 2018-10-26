@@ -17,7 +17,9 @@ namespace TicketCenterAPI.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.Tickets = new HashSet<Ticket>();
+            this.Admins = new HashSet<Admin>();
+            this.Employees = new HashSet<Employee>();
+            this.UserHasRoles = new HashSet<UserHasRole>();
             this.UserTickets = new HashSet<UserTicket>();
         }
     
@@ -28,11 +30,13 @@ namespace TicketCenterAPI.Models
         public string Password { get; set; }
         public Nullable<bool> IsActivate { get; set; }
         public Nullable<bool> IsLocked { get; set; }
-        public Nullable<int> RolesId { get; set; }
     
-        public virtual Role Role { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Ticket> Tickets { get; set; }
+        public virtual ICollection<Admin> Admins { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Employee> Employees { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserHasRole> UserHasRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserTicket> UserTickets { get; set; }
     }

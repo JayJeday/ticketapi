@@ -81,10 +81,37 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
-
-        
+        [Route("api/user/register")]
         [HttpPost]
-        public HttpResponseMessage AddUser(dynamic data)
+        public HttpResponseMessage RegisterUser([FromBody]TicketCenterAPI.Models.User user)
+        {
+            //insert into clients and users
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                //by default ticket are open
+                context.ins_client_registration(user.FirstName, user.LastName, user.Email, user.Password);
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent("Successfull saved"),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return Request.CreateResponse(HttpStatusCode.OK, "User registered succesfull");
+            }
+            
+
+        }
+
+
+        [HttpPost]
+        public HttpResponseMessage AddEmployee(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
