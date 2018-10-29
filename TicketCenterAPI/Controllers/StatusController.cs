@@ -51,6 +51,24 @@ namespace TicketCenterAPI.Controllers
 
         }
 
+
+        [HttpDelete]
+        public HttpResponseMessage DeleteStatus(int id)
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                context.sp_delete_status_by_id(id);
+
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Delete succesfull");
+
+            }
+        }
+
+
+
         //add status
         [HttpPost]
         [ActionName("addstatus")]

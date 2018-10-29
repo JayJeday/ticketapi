@@ -128,6 +128,24 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("ins_user", firstNameParameter, lastNameParameter, emailParameter, rolesIdParameter, categoryIdParameter);
         }
     
+        public virtual int sp_delete_category_by_id(Nullable<int> categoryId)
+        {
+            var categoryIdParameter = categoryId.HasValue ?
+                new ObjectParameter("CategoryId", categoryId) :
+                new ObjectParameter("CategoryId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_delete_category_by_id", categoryIdParameter);
+        }
+    
+        public virtual int sp_delete_status_by_id(Nullable<int> statusId)
+        {
+            var statusIdParameter = statusId.HasValue ?
+                new ObjectParameter("StatusId", statusId) :
+                new ObjectParameter("StatusId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_delete_status_by_id", statusIdParameter);
+        }
+    
         public virtual ObjectResult<sp_get_all_technician_Result> sp_get_all_technician()
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_all_technician_Result>("sp_get_all_technician");

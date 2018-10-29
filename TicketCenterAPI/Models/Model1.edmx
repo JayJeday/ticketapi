@@ -239,6 +239,12 @@
           <Parameter Name="RolesId" Type="int" Mode="In" />
           <Parameter Name="CategoryId" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_delete_category_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CategoryId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_delete_status_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="StatusId" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_get_all_technician" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_get_category_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
@@ -651,6 +657,12 @@
             <Parameter Name="RolesId" Mode="In" Type="Int32" />
             <Parameter Name="CategoryId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_delete_category_by_id">
+            <Parameter Name="CategoryId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_delete_status_by_id">
+            <Parameter Name="StatusId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="sp_get_all_technician" ReturnType="Collection(ticketcenterdbModel.sp_get_all_technician_Result)" />
           <FunctionImport Name="sp_get_category_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_category_by_id_Result)">
             <Parameter Name="id" Mode="In" Type="Int32" />
@@ -716,6 +728,7 @@
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="CategoryId" Nullable="true" />
           <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="RegisterDate" Nullable="true" Precision="23" />
           <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="RoleId" Nullable="false" />
         </ComplexType>
@@ -795,6 +808,8 @@
           <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
           <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="StatusId" Nullable="false" />
           <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
@@ -804,6 +819,8 @@
         <ComplexType Name="sp_select_all_users_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" />
+          <Property Type="Int32" Name="AdminId" Nullable="false" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="RoleId" Nullable="false" />
@@ -942,6 +959,8 @@
           <FunctionImportMapping FunctionImportName="ins_status" FunctionName="ticketcenterdbModel.Store.ins_status" />
           <FunctionImportMapping FunctionImportName="ins_tickets" FunctionName="ticketcenterdbModel.Store.ins_tickets" />
           <FunctionImportMapping FunctionImportName="ins_user" FunctionName="ticketcenterdbModel.Store.ins_user" />
+          <FunctionImportMapping FunctionImportName="sp_delete_category_by_id" FunctionName="ticketcenterdbModel.Store.sp_delete_category_by_id" />
+          <FunctionImportMapping FunctionImportName="sp_delete_status_by_id" FunctionName="ticketcenterdbModel.Store.sp_delete_status_by_id" />
           <FunctionImportMapping FunctionImportName="sp_get_all_technician" FunctionName="ticketcenterdbModel.Store.sp_get_all_technician">
             <ResultMapping>
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_all_technician_Result">
@@ -950,6 +969,7 @@
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+                <ScalarProperty Name="RegisterDate" ColumnName="RegisterDate" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
               </ComplexTypeMapping>
@@ -1073,6 +1093,8 @@
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
                 <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
@@ -1086,6 +1108,8 @@
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_select_all_users_Result">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="AdminId" ColumnName="AdminId" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />

@@ -79,6 +79,20 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
+        [HttpDelete]
+        public HttpResponseMessage DeleteCategory(int id)
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                context.sp_delete_category_by_id(id);
+
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Delete succesfull");
+
+            }
+        }
 
         [HttpPut]
         [ActionName("updatecategory")]
