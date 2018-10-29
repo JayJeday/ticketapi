@@ -17,7 +17,7 @@ namespace TicketCenterAPI.Controllers
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                var userTicket = context.sp_get_user_ticket_by_id(id);
+                var userTicket = context;
 
                 string result = "";
 

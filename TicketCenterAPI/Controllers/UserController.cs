@@ -80,6 +80,42 @@ namespace TicketCenterAPI.Controllers
                 return response;
             }
         }
+        [HttpGet]
+        [Route("api/user/role")]
+        public HttpResponseMessage GetUserRoleById(int id)
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                var user = context.sp_get_users_roles_by_id(id);
+
+                string result = "";
+
+                if (user != null)
+                {
+                    //convert list to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(user);
+
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                }
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent(result),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return response;
+            }
+        }
 
         [Route("api/user/register")]
         [HttpPost]
@@ -229,7 +265,7 @@ namespace TicketCenterAPI.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
             }
         }
-
+//update users roles
         [HttpPut]
         public HttpResponseMessage UpdateUser(dynamic data)
         {
@@ -251,25 +287,14 @@ namespace TicketCenterAPI.Controllers
 
                     //object then unbox to int
                     int id = data.id;
-                    object roleId = data.RoleId;
-                    object categoryId = data.CategoryId;
-
-                    //if roleId is not null => role was selected to update
-                    if(data.RoleId != null)
-                    {
-                        int i = data.RoleId;
-                      context.usp_user(id,null,i);
-                    }
-                    else if (categoryId != null)
-                    {
-                        //category was updated pass null to role
-                        int i = data.CategoryId;
-                        context.usp_user(id,i,null);
-                    }
-                   
+                    int roleId = data.RoleId;
 
 
-                    System.Diagnostics.Debug.WriteLine(roleId + " and " + categoryId);
+                    //update role
+                    context.usp_role_user(id, roleId);
+
+
+                    System.Diagnostics.Debug.WriteLine(roleId + " and " );
 
                     
 
