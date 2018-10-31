@@ -96,6 +96,7 @@
           <Property Name="Password" Type="varchar" MaxLength="50" />
           <Property Name="IsActivate" Type="bit" />
           <Property Name="IsLocked" Type="bit" />
+          <Property Name="CreatedDate" Type="date" />
         </EntityType>
         <EntityType Name="UserTickets">
           <Key>
@@ -288,6 +289,8 @@
         <Function Name="usp_role_user" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="UserId" Type="int" Mode="In" />
           <Parameter Name="RoleId" Type="int" Mode="In" />
+          <Parameter Name="FirstName" Type="varchar" Mode="In" />
+          <Parameter Name="Lastname" Type="varchar" Mode="In" />
         </Function>
         <Function Name="usp_status" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="statusId" Type="int" Mode="In" />
@@ -461,6 +464,7 @@
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IsActivate" Type="Boolean" />
           <Property Name="IsLocked" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Admins" Relationship="Self.FK_Admins_Users" FromRole="Users" ToRole="Admins" />
           <NavigationProperty Name="Employees" Relationship="Self.FK_Employees_Users" FromRole="Users" ToRole="Employees" />
           <NavigationProperty Name="UserHasRoles" Relationship="Self.FK_UserHasRole_Users" FromRole="Users" ToRole="UserHasRole" />
@@ -706,6 +710,8 @@
           <FunctionImport Name="usp_role_user">
             <Parameter Name="UserId" Mode="In" Type="Int32" />
             <Parameter Name="RoleId" Mode="In" Type="Int32" />
+            <Parameter Name="FirstName" Mode="In" Type="String" />
+            <Parameter Name="Lastname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="usp_status">
             <Parameter Name="statusId" Mode="In" Type="Int32" />
@@ -820,7 +826,6 @@
           <Property Type="Int32" Name="id" Nullable="false" />
           <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
           <Property Type="DateTime" Name="CreatedDate" Nullable="true" />
-          <Property Type="Int32" Name="AdminId" Nullable="false" />
           <Property Type="String" Name="LastName" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="RoleId" Nullable="false" />
@@ -942,6 +947,7 @@
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="IsActivate" ColumnName="IsActivate" />
                 <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1109,7 +1115,6 @@
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="AdminId" ColumnName="AdminId" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />

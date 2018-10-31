@@ -288,10 +288,11 @@ namespace TicketCenterAPI.Controllers
                     //object then unbox to int
                     int id = data.id;
                     int roleId = data.RoleId;
-
+                    string firstName = data.FirstName;
+                    string lastName = data.LastName;
 
                     //update role
-                    context.usp_role_user(id, roleId);
+                    context.usp_role_user(id, roleId,firstName,lastName);
 
 
                     System.Diagnostics.Debug.WriteLine(roleId + " and " );

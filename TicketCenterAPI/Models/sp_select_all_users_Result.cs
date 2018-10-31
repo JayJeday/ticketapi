@@ -16,7 +16,6 @@ namespace TicketCenterAPI.Models
         public int id { get; set; }
         public string FirstName { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
-        public int AdminId { get; set; }
         public string LastName { get; set; }
         public string Role { get; set; }
         public int RoleId { get; set; }

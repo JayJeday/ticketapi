@@ -287,7 +287,7 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_category", categoryIdParameter, categoryParameter);
         }
     
-        public virtual int usp_role_user(Nullable<int> userId, Nullable<int> roleId)
+        public virtual int usp_role_user(Nullable<int> userId, Nullable<int> roleId, string firstName, string lastname)
         {
             var userIdParameter = userId.HasValue ?
                 new ObjectParameter("UserId", userId) :
@@ -297,7 +297,15 @@ namespace TicketCenterAPI.Models
                 new ObjectParameter("RoleId", roleId) :
                 new ObjectParameter("RoleId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_role_user", userIdParameter, roleIdParameter);
+            var firstNameParameter = firstName != null ?
+                new ObjectParameter("FirstName", firstName) :
+                new ObjectParameter("FirstName", typeof(string));
+    
+            var lastnameParameter = lastname != null ?
+                new ObjectParameter("Lastname", lastname) :
+                new ObjectParameter("Lastname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_role_user", userIdParameter, roleIdParameter, firstNameParameter, lastnameParameter);
         }
     
         public virtual int usp_status(Nullable<int> statusId, string status)
