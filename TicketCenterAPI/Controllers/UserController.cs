@@ -244,8 +244,9 @@ namespace TicketCenterAPI.Controllers
                     //object then unbox to int
                     int userId = data.UserId;
                     int categoryId = data.CategoryId;
+                    bool inChat = data.InChat();
 
-                    context.usp_tech_cat(categoryId,userId);
+                    context.usp_tech_cat(categoryId,userId,inChat);
 
                  //   System.Diagnostics.Debug.WriteLine(roleId + " and " + categoryId);
 

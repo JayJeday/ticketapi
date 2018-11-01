@@ -160,6 +160,15 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_category_by_id_Result>("sp_get_category_by_id", idParameter);
         }
     
+        public virtual ObjectResult<sp_get_chat_ticket_by_client_id_Result> sp_get_chat_ticket_by_client_id(Nullable<int> clientId)
+        {
+            var clientIdParameter = clientId.HasValue ?
+                new ObjectParameter("ClientId", clientId) :
+                new ObjectParameter("ClientId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_get_chat_ticket_by_client_id_Result>("sp_get_chat_ticket_by_client_id", clientIdParameter);
+        }
+    
         public virtual ObjectResult<sp_get_login_Result> sp_get_login(string email, string password)
         {
             var emailParameter = email != null ?
@@ -321,7 +330,7 @@ namespace TicketCenterAPI.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_status", statusIdParameter, statusParameter);
         }
     
-        public virtual int usp_tech_cat(Nullable<int> categoryId, Nullable<int> userId)
+        public virtual int usp_tech_cat(Nullable<int> categoryId, Nullable<int> userId, Nullable<bool> inChat)
         {
             var categoryIdParameter = categoryId.HasValue ?
                 new ObjectParameter("categoryId", categoryId) :
@@ -331,7 +340,11 @@ namespace TicketCenterAPI.Models
                 new ObjectParameter("userId", userId) :
                 new ObjectParameter("userId", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_tech_cat", categoryIdParameter, userIdParameter);
+            var inChatParameter = inChat.HasValue ?
+                new ObjectParameter("inChat", inChat) :
+                new ObjectParameter("inChat", typeof(bool));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("usp_tech_cat", categoryIdParameter, userIdParameter, inChatParameter);
         }
     
         public virtual int usp_ticket(Nullable<int> ticketId, Nullable<int> techId, Nullable<int> statusId, string comments)

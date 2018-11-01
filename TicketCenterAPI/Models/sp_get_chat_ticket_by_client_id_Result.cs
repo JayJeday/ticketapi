@@ -10,13 +10,17 @@
 namespace TicketCenterAPI.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class TechCategory
+    public partial class sp_get_chat_ticket_by_client_id_Result
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
+        public int TicketId { get; set; }
+        public string Description { get; set; }
+        public string Comment { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public Nullable<int> TechId { get; set; }
         public int CategoryId { get; set; }
-        public Nullable<bool> InChat { get; set; }
+        public string CategoryDesc { get; set; }
+        public int StatusId { get; set; }
+        public string StatusDesc { get; set; }
     }
 }

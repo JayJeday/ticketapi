@@ -146,6 +146,45 @@ namespace TicketCenterAPI.Controllers
             }
         }
 
+        //Get the ticket by client id to get the ticket
+        [HttpGet]
+        [Route("api/user/ticket/client")]
+        public HttpResponseMessage GetTicketByClientId(int id)
+        {
+            using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
+            {
+                context.Configuration.ProxyCreationEnabled = false;
+
+                var ticket = context.sp_get_chat_ticket_by_client_id(id);
+
+                string result = "";
+
+                if (ticket != null)
+                {
+                    //convert list to json
+                    result = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
+
+                }
+                else
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                }
+
+                var response = new HttpResponseMessage
+                {
+                    Content = new StringContent(result),
+                    StatusCode = HttpStatusCode.OK
+                };
+
+                response.Content.Headers.Clear();
+                response.Content.Headers.Add("Content-Type", "application/json");
+
+
+                return response;
+            }
+        }
+
+
 
 
         [HttpGet]

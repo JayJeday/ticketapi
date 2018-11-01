@@ -63,6 +63,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="InChat" Type="bit" />
         </EntityType>
         <EntityType Name="Tickets">
           <Key>
@@ -250,6 +251,9 @@
         <Function Name="sp_get_category_by_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="id" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_get_chat_ticket_by_client_id" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientId" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_get_login" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="email" Type="varchar" Mode="In" />
           <Parameter Name="password" Type="varchar" Mode="In" />
@@ -299,6 +303,7 @@
         <Function Name="usp_tech_cat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="categoryId" Type="int" Mode="In" />
           <Parameter Name="userId" Type="int" Mode="In" />
+          <Parameter Name="inChat" Type="bit" Mode="In" />
         </Function>
         <Function Name="usp_ticket" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ticketId" Type="int" Mode="In" />
@@ -424,6 +429,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="InChat" Type="Boolean" />
         </EntityType>
         <EntityType Name="Ticket">
           <Key>
@@ -671,6 +677,9 @@
           <FunctionImport Name="sp_get_category_by_id" ReturnType="Collection(ticketcenterdbModel.sp_get_category_by_id_Result)">
             <Parameter Name="id" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_get_chat_ticket_by_client_id" ReturnType="Collection(ticketcenterdbModel.sp_get_chat_ticket_by_client_id_Result)">
+            <Parameter Name="ClientId" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="sp_get_login" ReturnType="Collection(ticketcenterdbModel.sp_get_login_Result)">
             <Parameter Name="email" Mode="In" Type="String" />
             <Parameter Name="password" Mode="In" Type="String" />
@@ -720,6 +729,7 @@
           <FunctionImport Name="usp_tech_cat">
             <Parameter Name="categoryId" Mode="In" Type="Int32" />
             <Parameter Name="userId" Mode="In" Type="Int32" />
+            <Parameter Name="inChat" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="usp_ticket">
             <Parameter Name="ticketId" Mode="In" Type="Int32" />
@@ -737,10 +747,22 @@
           <Property Type="DateTime" Name="RegisterDate" Nullable="true" Precision="23" />
           <Property Type="String" Name="Role" Nullable="true" MaxLength="50" />
           <Property Type="Int32" Name="RoleId" Nullable="false" />
+          <Property Type="Boolean" Name="InChat" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_get_category_by_id_Result">
           <Property Type="Int32" Name="CategoryId" Nullable="false" />
           <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_get_chat_ticket_by_client_id_Result">
+          <Property Type="Int32" Name="TicketId" Nullable="false" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Comment" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="TechId" Nullable="true" />
+          <Property Type="Int32" Name="CategoryId" Nullable="false" />
+          <Property Type="String" Name="CategoryDesc" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="StatusId" Nullable="false" />
+          <Property Type="String" Name="StatusDesc" Nullable="true" MaxLength="20" />
         </ComplexType>
         <ComplexType Name="sp_get_login_Result">
           <Property Type="Int32" Name="id" Nullable="false" />
@@ -911,6 +933,7 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="InChat" ColumnName="InChat" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -978,6 +1001,7 @@
                 <ScalarProperty Name="RegisterDate" ColumnName="RegisterDate" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="InChat" ColumnName="InChat" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -986,6 +1010,21 @@
               <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_category_by_id_Result">
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_get_chat_ticket_by_client_id" FunctionName="ticketcenterdbModel.Store.sp_get_chat_ticket_by_client_id">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="ticketcenterdbModel.sp_get_chat_ticket_by_client_id_Result">
+                <ScalarProperty Name="TicketId" ColumnName="TicketId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="TechId" ColumnName="TechId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="CategoryDesc" ColumnName="CategoryDesc" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
+                <ScalarProperty Name="StatusDesc" ColumnName="StatusDesc" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

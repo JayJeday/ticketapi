@@ -21,5 +21,6 @@ namespace TicketCenterAPI.Models
         public Nullable<System.DateTime> RegisterDate { get; set; }
         public string Role { get; set; }
         public int RoleId { get; set; }
+        public Nullable<bool> InChat { get; set; }
     }
 }
