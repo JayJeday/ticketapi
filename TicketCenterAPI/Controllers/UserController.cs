@@ -243,10 +243,21 @@ namespace TicketCenterAPI.Controllers
 
                     //object then unbox to int
                     int userId = data.UserId;
-                    int categoryId = data.CategoryId;
-                    bool inChat = data.InChat();
+                    
+                    
 
-                    context.usp_tech_cat(categoryId,userId,inChat);
+                    if(data.CategoryId == null)
+                    {
+                    bool inChat = data.InChat;
+                    context.usp_tech_cat(null,userId,inChat);
+                    }
+                    else
+                    {
+                        int categoryId = data.CategoryId;
+                        context.usp_tech_cat(categoryId, userId, null);
+                    }
+
+                    
 
                  //   System.Diagnostics.Debug.WriteLine(roleId + " and " + categoryId);
 
