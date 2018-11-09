@@ -186,7 +186,7 @@ namespace TicketCenterAPI.Controllers
 
 
 
-
+        [Authorize] // Require authenticated requests.
         [HttpGet]
         [Route("api/user/tickets/pagi")]
         public HttpResponseMessage GetTicketByIdPagi(int pageIndex,int pageSize,int userId)
