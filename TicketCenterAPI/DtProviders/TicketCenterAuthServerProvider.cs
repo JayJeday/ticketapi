@@ -52,6 +52,7 @@ namespace TicketCenterAPI.DtProviders
                             identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
 
                             var clients = db.Clients.ToList();
+
                             Client client = clients.Where(x => x.UserId  == loginUser.id).FirstOrDefault();
 
                             Employee emp = db.Employees.Where(e => e.UserId == loginUser.id).FirstOrDefault();
@@ -145,7 +146,7 @@ namespace TicketCenterAPI.DtProviders
         }
 
 
-        //token end point 
+        //token end point override  
         public override Task TokenEndpoint(OAuthTokenEndpointContext context)
         {
             foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)

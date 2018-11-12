@@ -1,18 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Data.Entity.Infrastructure;
+﻿using System.Web.Http;
+using Newtonsoft.Json.Linq;
 
 namespace TicketCenterAPI.Controllers
 {
     public class TicketController : ApiController
     {
-
         //get all  tickets
-    
          [HttpGet]
-        public HttpResponseMessage GetAllTickets(int pageIndex, int pageSize)
+        public IHttpActionResult GetAllTickets(int pageIndex, int pageSize)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -21,25 +16,17 @@ namespace TicketCenterAPI.Controllers
                 //get all tickets
                 var tickets = context.sp_select_all_tickets(pageIndex,pageSize);
 
-                string result = "";
-
-                if (tickets != null)
+                if (tickets == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(tickets);
+                    return NotFound();
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                //convert list to json
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(tickets);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonArray);
 
             }
         }
@@ -48,33 +35,36 @@ namespace TicketCenterAPI.Controllers
         // Insert Employee  
         // POST api/Tickets
         [HttpPost]
-        public HttpResponseMessage AddTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
+        public IHttpActionResult AddTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
+                if (!ModelState.IsValid)
+                {
+                    return NotFound();
+                }
+
                 context.Configuration.ProxyCreationEnabled = false;
 
+                try
+                {
                 //by default ticket are open
                 context.ins_tickets(ticket.Description, "", ticket.CategoryId, 1,ticket.ClientId);
-
-                var response = new HttpResponseMessage
+                }
+                catch
                 {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
+                    return InternalServerError();
+                }
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                return Ok("Ticket succesfull created");
 
-
-                return Request.CreateResponse(HttpStatusCode.OK, "Ticket succesfull created");
             }
         }
 
 
         [HttpPut]
         [ActionName("updateticket")]
-        public HttpResponseMessage UpdateTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
+        public IHttpActionResult UpdateTicket([FromBody]TicketCenterAPI.Models.Ticket ticket)
         {
 
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -85,7 +75,7 @@ namespace TicketCenterAPI.Controllers
                 //is the model with binding is incorrect
                 if (!ModelState.IsValid)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 try
@@ -94,62 +84,44 @@ namespace TicketCenterAPI.Controllers
                     // context.usp_ticket(ticket.TicketId,ticket.TechId,ticket.StatusId, ticket.Comment);
                     context.usp_ticket(ticket.TicketId, ticket.TechId, ticket.StatusId, ticket.Comment);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex);
+                    return NotFound();
                 }
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
 
-                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+                return Ok("Update succesfull");
             }
         }
 
          
         
         [HttpGet]
-        public HttpResponseMessage GetTicketById(int id)
+        public IHttpActionResult GetTicketById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
                 var ticket = context.sp_get_ticket_by_id(id);
-                
-                string result = "";
 
-                if (ticket != null)
+                if (ticket == null)
                 {
                     //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
-                    
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                    return NotFound();              
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+               string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonArray);
             }
         }
 
         //Get the ticket by client id to get the ticket
         [HttpGet]
         [Route("api/user/ticket/client")]
-        public HttpResponseMessage GetTicketByClientId(int id)
+        public IHttpActionResult GetTicketByClientId(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -157,30 +129,16 @@ namespace TicketCenterAPI.Controllers
 
                 var ticket = context.sp_get_chat_ticket_by_client_id(id);
 
-                string result = "";
-
-                if (ticket != null)
+                if (ticket == null)
                 {
+                    return NotFound();
+                }
                     //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
+                  string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
 
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
-                }
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
-
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return response;
+                return Ok(jsonArray);
             }
         }
 
@@ -189,7 +147,7 @@ namespace TicketCenterAPI.Controllers
         [Authorize] // Require authenticated requests.
         [HttpGet]
         [Route("api/user/tickets/pagi")]
-        public HttpResponseMessage GetTicketByIdPagi(int pageIndex,int pageSize,int userId)
+        public IHttpActionResult GetTicketByIdPagi(int pageIndex,int pageSize,int userId)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -197,30 +155,17 @@ namespace TicketCenterAPI.Controllers
 
                 var ticket = context.sp_get_user_ticket_by_id_pagi(pageIndex,pageSize,userId);
 
-                string result = "";
 
-                if (ticket != null)
+                if (ticket == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
-
-                }
-                else
-                {
-                   return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                    return NotFound();   
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+               string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(ticket);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonArray);
 
             }
         }

@@ -12,7 +12,7 @@ namespace TicketCenterAPI.Controllers
     public class UserController : ApiController
     {
         [HttpGet]
-        public HttpResponseMessage GetAllUser()
+        public IHttpActionResult GetAllUser()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -21,32 +21,24 @@ namespace TicketCenterAPI.Controllers
                 //get all tickets
                 var users = context.sp_select_all_users();
 
-                string result = "";
-
-                if (users != null)
+                if (users == null)
                 {
                     //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(users);
+                    return NotFound();            
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(users);
+                
+                JArray jsonObjects = JArray.Parse(jsonArrayString);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return response;
+                return Ok(jsonObjects);
             }
 
 
         }
 
         [HttpGet]
-        public HttpResponseMessage GetUserById(int id)
+        public IHttpActionResult GetUserById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -54,35 +46,25 @@ namespace TicketCenterAPI.Controllers
 
                 var user = context.sp_get_user_by_id(id);
 
-                string result = "";
-
-                if (user != null)
+                if (user == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(user);
+                    return NotFound();
 
                 }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
-                }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+             //convert list to json
+             string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(user);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+             JArray jsonArray = JArray.Parse(jsonArrayString);
 
+             return Ok(jsonArray);
 
-                return response;
             }
         }
+
         [HttpGet]
         [Route("api/user/role")]
-        public HttpResponseMessage GetUserRoleById(int id)
+        public IHttpActionResult GetUserRoleById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -90,103 +72,96 @@ namespace TicketCenterAPI.Controllers
 
                 var user = context.sp_get_users_roles_by_id(id);
 
-                string result = "";
-
-                if (user != null)
+                if (user == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(user);
-
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Something went wrong");
+                    return NotFound();
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                //convert list to json
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(user);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return response;
+                JArray jsonObjects = JArray.Parse(jsonArrayString);
+                return Ok(jsonObjects);
             }
         }
 
         [Route("api/user/register")]
         [HttpPost]
-        public HttpResponseMessage RegisterUser([FromBody]TicketCenterAPI.Models.User user)
+        public IHttpActionResult RegisterUser([FromBody]TicketCenterAPI.Models.User user)
         {
             //insert into clients and users
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                //by default ticket are open
-                context.ins_client_registration(user.FirstName, user.LastName, user.Email, user.Password);
-
-                var response = new HttpResponseMessage
+                if (!ModelState.IsValid)
                 {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
+                    return BadRequest(ModelState);
+                }
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                try
+                {
+                     context.ins_client_registration(user.FirstName, user.LastName, user.Email, user.Password);
+                }
+                catch 
+                {
+                    return InternalServerError();
+                }
+                //by default ticket are open
 
-
-                return Request.CreateResponse(HttpStatusCode.OK, "User registered succesfull");
+                return Ok("User registered succesfull");
             }
             
-
         }
 
 
         [HttpPost]
-        public HttpResponseMessage AddEmployee(dynamic data)
+        public IHttpActionResult AddEmployee(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
                 string firstname = data.FirstName;
                 string lastname = data.LastName;
                 string email = data.Email;
                 int roleId = data.RoleId;
-                
-                if(data.CategoryId == null)
+
+                try
                 {
-                context.ins_user(firstname,lastname,email,roleId,null);
+
+                    if (data.CategoryId == null)
+                    {
+                        context.ins_user(firstname, lastname, email, roleId, null);
+
+                        return InternalServerError();
+                    }
+                    else
+                    {
+                        int categoryId = data.CategoryId;
+                        context.ins_user(firstname, lastname, email, roleId, categoryId);
+                    }
                 }
-                else
+
+                catch
                 {
-                    int categoryId = data.CategoryId;
-                    context.ins_user(firstname, lastname, email, roleId, categoryId);
+                    return InternalServerError();
                 }
-                //by default ticket are open
-                
-
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
-
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return Request.CreateResponse(HttpStatusCode.OK, "User succesfull created");
+                    
+               return Ok("User succesfull created");
+               
             }
+
         }
 
         [Route("api/user/techs")]
-        public HttpResponseMessage GetAllTechs()
+        [HttpGet]
+        public IHttpActionResult GetAllTechs()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -194,46 +169,34 @@ namespace TicketCenterAPI.Controllers
 
                 var techs = context.sp_get_all_technician();
 
-                string result = "";
 
-                if (techs != null)
+                if (techs == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(techs);
+                    return NotFound();
 
                 }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
-                }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                //convert list to json
+               string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(techs);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonArray);
             }
         }
 
+
         [Route("api/user/tech/cat")]
         [HttpPut]
-        public HttpResponseMessage UpdateTechCat(dynamic data)
+        public IHttpActionResult UpdateTechCat(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
-
                 context.Configuration.ProxyCreationEnabled = false;
 
-                //is the model with binding is incorrect
                 if (!ModelState.IsValid)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 try
@@ -244,42 +207,37 @@ namespace TicketCenterAPI.Controllers
                     //object then unbox to int
                     int userId = data.UserId;
                     
-                    
-
                     if(data.CategoryId == null)
                     {
-                    bool inChat = data.InChat;
-                    context.usp_tech_cat(null,userId,inChat);
+
+                        bool inChat = data.InChat;
+                        context.usp_tech_cat(null,userId,inChat);
+
                     }
+
                     else
                     {
+
                         int categoryId = data.CategoryId;
                         context.usp_tech_cat(categoryId, userId, null);
+
                     }
 
-                    
-
                  //   System.Diagnostics.Debug.WriteLine(roleId + " and " + categoryId);
-
-
 
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex);
+                    return NotFound();
                 }
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
 
-                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+                return Ok("Update succesfull");
             }
         }
-//update users roles
+
+        //update users roles
         [HttpPut]
-        public HttpResponseMessage UpdateUser(dynamic data)
+        public IHttpActionResult UpdateUser(dynamic data)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -289,7 +247,7 @@ namespace TicketCenterAPI.Controllers
                 //is the model with binding is incorrect
                 if (!ModelState.IsValid)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 try
@@ -314,15 +272,10 @@ namespace TicketCenterAPI.Controllers
                 }
                 catch (DbUpdateConcurrencyException ex)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex);
+                    return NotFound();
                 }
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
 
-                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+                return Ok("Update succesfull");   
             }
         }
 

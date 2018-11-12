@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace TicketCenterAPI.Controllers
     public class StatusController : ApiController
     {
         [HttpGet]
-        public HttpResponseMessage GetAllStatus()
+        public IHttpActionResult GetAllStatus()
         {
             //using method calls dispose to dispose any resourses after the  call
             //context access the data model from the database
@@ -19,50 +20,46 @@ namespace TicketCenterAPI.Controllers
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-
                 //    alternative to using store procedure
                 var status = context.sp_select_all_status();
-
 
                 //write the query to search the database linq 
                 //   var query = (from c in context.Categories select c).ToList();
 
-
-                string result = "";
-
-                if (status != null)
+                if (status == null)
                 {
-                    //if we have a results get categories to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(status);
+                    return NotFound();
+                   
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+               string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(status);
 
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-                return response;
+                return Ok(jsonArray);
             }
 
         }
 
 
         [HttpDelete]
-        public HttpResponseMessage DeleteStatus(int id)
+        public IHttpActionResult DeleteStatus(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
-                context.Configuration.ProxyCreationEnabled = false;
 
-                context.sp_delete_status_by_id(id);
-
-
-                return Request.CreateResponse(HttpStatusCode.OK, "Delete succesfull");
+                    context.Configuration.ProxyCreationEnabled = false;
+                try
+                {
+                    context.sp_delete_status_by_id(id);
+                }
+                catch
+                {
+                    return InternalServerError();
+                }
+               
+                return Ok("Delete succesfull");
 
             }
         }
@@ -72,32 +69,35 @@ namespace TicketCenterAPI.Controllers
         //add status
         [HttpPost]
         [ActionName("addstatus")]
-        public HttpResponseMessage AddStatus([FromBody]TicketCenterAPI.Models.Status status)
+        public IHttpActionResult AddStatus([FromBody]TicketCenterAPI.Models.Status status)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                //by default ticket are open
-                context.ins_status(status.StatusDesc);
-
-                var response = new HttpResponseMessage
+                if (!ModelState.IsValid)
                 {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
+                    return BadRequest(ModelState);
+                }
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
+                try
+                {
+                    //by default ticket are open
+                    context.ins_status(status.StatusDesc);
+                }
+                catch
+                {
+                    return InternalServerError();
+                }
+              
                 //TODO delete response
-                return Request.CreateResponse(HttpStatusCode.OK, "Succesfull created");
+                return Ok("Succesfull created");
             }
         }
 
         [HttpGet]
         [Route("api/status/summary")]
-        public HttpResponseMessage GetStatusSumary()
+        public IHttpActionResult GetStatusSumary()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -105,30 +105,16 @@ namespace TicketCenterAPI.Controllers
 
                 var category = context.sp_summary_status();
 
-                string result = "";
-
-                if (category != null)
+                if (category == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(category);
-
+                    return NotFound();
                 }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
-                }
+               //convert list to json
+                  string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(category);
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return response;
+                return Ok(jsonArray);
             }
         }
 
@@ -137,7 +123,7 @@ namespace TicketCenterAPI.Controllers
 
         [HttpPut]
         [ActionName("updatestatus")]
-        public HttpResponseMessage UpdateStatus([FromBody]TicketCenterAPI.Models.Status status)
+        public IHttpActionResult UpdateStatus([FromBody]TicketCenterAPI.Models.Status status)
         {
 
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -148,7 +134,7 @@ namespace TicketCenterAPI.Controllers
                 //is the model with binding is incorrect
                 if (!ModelState.IsValid)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 try
@@ -156,55 +142,37 @@ namespace TicketCenterAPI.Controllers
                     //todo change name of SP admin used too
                     context.usp_status(status.StatusId, status.StatusDesc);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex);
+                    return NotFound();
                 }
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
 
-                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+                return Ok("Update succesfull");
             }
         }
 
 
 
         [HttpGet]
-        public HttpResponseMessage GetStatusById(int id)
+        public IHttpActionResult GetStatusById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                var status = context.sp_get_status_by_id(id); ;
+                var status = context.sp_get_status_by_id(id); 
 
-                string result = "";
-
-                if (status != null)
+                if (status == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(status);
-
-                }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
+                    return NotFound();
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                //convert list to json
+               string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(status);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonArray);
             }
         }
     }

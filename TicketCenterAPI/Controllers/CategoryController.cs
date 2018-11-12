@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace TicketCenterAPI.Controllers
 
         [HttpGet]
         [Route("api/category/all")]
-        public HttpResponseMessage GetAllCategories()
+        public IHttpActionResult GetAllCategories()
         {
             //using method calls dispose to dispose any resourses after the  call
             //context access the data model from the database
@@ -26,29 +27,21 @@ namespace TicketCenterAPI.Controllers
                 var categories = context.sp_select_all_categories();
                   
 
-                //write the query to search the database linq 
-             //   var query = (from c in context.Categories select c).ToList();
-
-                
-                string result = "";
-
-                if (categories != null)
+                if(categories == null)
                 {
-                    //if we have a results get categories to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(categories);
+                    return NotFound();
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
-
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                //write the query to search the database linq 
+                //   var query = (from c in context.Categories select c).ToList();
 
 
-                return response;
+                //if we have a results get categories to json
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(categories);
+
+                JArray jsonArray = JArray.Parse(jsonArrayString);
+
+                return Ok(jsonArray);
             }
               
         }
@@ -56,47 +49,54 @@ namespace TicketCenterAPI.Controllers
         //add status
         [HttpPost]
         [ActionName("addcategory")]
-        public HttpResponseMessage AddCategory([FromBody]TicketCenterAPI.Models.Category category)
+        public IHttpActionResult AddCategory([FromBody]TicketCenterAPI.Models.Category category)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                //by default ticket are open
-                context.ins_category(category.CategoryDesc);
-
-                var response = new HttpResponseMessage
+                if (!ModelState.IsValid)
                 {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
+                    return BadRequest(ModelState);
+                }
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
-
-
-                return Request.CreateResponse(HttpStatusCode.OK, "Saved succesfull");
+                try
+                {
+                    context.ins_category(category.CategoryDesc);
+                }
+                catch
+                {
+                    return InternalServerError();
+                }
+      
+                return Ok("Saved succesfull");
             }
         }
 
         [HttpDelete]
-        public HttpResponseMessage DeleteCategory(int id)
+        public IHttpActionResult DeleteCategory(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
 
-                context.sp_delete_category_by_id(id);
+                try
+                {
+                    context.sp_delete_category_by_id(id);
+                }
+                catch
+                {
+                    return InternalServerError();
+                }
 
-
-                return Request.CreateResponse(HttpStatusCode.OK, "Delete succesfull");
+                return Ok("Delete succesfull");
 
             }
         }
 
         [HttpPut]
         [ActionName("updatecategory")]
-        public HttpResponseMessage UpdateCategory([FromBody]TicketCenterAPI.Models.Category category)
+        public IHttpActionResult UpdateCategory([FromBody]TicketCenterAPI.Models.Category category)
         {
 
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
@@ -107,7 +107,7 @@ namespace TicketCenterAPI.Controllers
                 //is the model with binding is incorrect
                 if (!ModelState.IsValid)
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                    return BadRequest(ModelState);
                 }
 
                 try
@@ -115,24 +115,19 @@ namespace TicketCenterAPI.Controllers
                     //todo change name of SP admin used too
                     context.usp_category(category.CategoryId, category.CategoryDesc);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch
                 {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, ex);
+                    return NotFound();
                 }
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent("Successfull saved"),
-                    StatusCode = HttpStatusCode.OK
-                };
 
-                return Request.CreateResponse(HttpStatusCode.OK, "Update succesfull");
+                return Ok("Update succesfull");
             }
         }
 
 
         [HttpGet]
         [Route("api/category/summary")]
-        public HttpResponseMessage GetCategorySumary()
+        public IHttpActionResult GetCategorySumary()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -140,37 +135,26 @@ namespace TicketCenterAPI.Controllers
 
                 var category=context.sp_summary_category();
 
-                string result = "";
 
-                if (category != null)
+                if (category == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(category);
+                    return NotFound();
 
                 }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
-                }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                //convert list to json
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(category);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonObjects = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonObjects);
             }
         }
 
 
 
         [HttpGet]
-        public HttpResponseMessage GetCategoryById(int id)
+        public IHttpActionResult GetCategoryById(int id)
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
@@ -178,30 +162,19 @@ namespace TicketCenterAPI.Controllers
 
                 var category = context.sp_get_category_by_id(id); 
 
-                string result = "";
-
-                if (category != null)
+                if (category == null)
                 {
-                    //convert list to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(category);
+
+                    return NotFound();
 
                 }
-                else
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Result Unavailable");
-                }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                  //convert list to json
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(category);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                return Ok(jsonArray);
             }
         }
 

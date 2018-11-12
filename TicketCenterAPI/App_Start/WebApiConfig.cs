@@ -25,6 +25,9 @@ namespace TicketCenterAPI
 
             config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
             config.Formatters.Remove(config.Formatters.XmlFormatter);
+
+
+
         }
     }
 }

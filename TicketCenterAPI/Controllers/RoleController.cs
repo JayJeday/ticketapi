@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using Newtonsoft.Json.Linq;
 using System.Web.Http;
+
+
 
 namespace TicketCenterAPI.Controllers
 {
@@ -11,36 +9,34 @@ namespace TicketCenterAPI.Controllers
     {
 
         [HttpGet]
-        public HttpResponseMessage GetRoles()
+        public IHttpActionResult GetRoles()
         {
             using (var context = new TicketCenterAPI.Models.ticketcenterdbEntities1())
             {
                 context.Configuration.ProxyCreationEnabled = false;
+                context.Configuration.LazyLoadingEnabled = false;
 
                 var roles = context.sp_select_all_roles();
 
-                string result = "";
-
-                if (roles != null)
+                if(roles == null)
                 {
-                    //if we have a results get categories to json
-                    result = Newtonsoft.Json.JsonConvert.SerializeObject(roles);
+                    return NotFound();
                 }
 
-                var response = new HttpResponseMessage
-                {
-                    Content = new StringContent(result),
-                    StatusCode = HttpStatusCode.OK
-                };
+                //if we have a results get roles to json string 
+                string jsonArrayString = Newtonsoft.Json.JsonConvert.SerializeObject(roles);
 
-                response.Content.Headers.Clear();
-                response.Content.Headers.Add("Content-Type", "application/json");
+                //parse string json array to json objects
+                JArray jsonArray = JArray.Parse(jsonArrayString);
 
-
-                return response;
+                /*             
+                 *             get specific object
+                dynamic data = JObject.Parse(jsonArray[0].ToString());
+                */
+                
+                return Ok(jsonArray);
             }
         }
-
 
 
     }
